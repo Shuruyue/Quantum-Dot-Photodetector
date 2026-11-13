@@ -86,15 +86,21 @@ Quantum-Dot-Photodetector/
 
 Effective-mass approximation with parabolic bands and infinite walls (Brus 1984), dot radius R = d/2:
 
-$$E_\mathrm{EMA}(R) = E_g + \frac{\hbar^2\pi^2}{2R^2}\left(\frac{1}{m_e^*}+\frac{1}{m_h^*}\right) - \frac{1.786\,e^2}{4\pi\varepsilon_0\varepsilon_\infty R}$$
+```math
+E_\mathrm{EMA}(R) = E_g + \frac{\hbar^2\pi^2}{2R^2}\left(\frac{1}{m_e^*}+\frac{1}{m_h^*}\right) - \frac{1.786\,e^2}{4\pi\varepsilon_0\varepsilon_\infty R}
+```
 
-Two-band hyperbolic model (Wang et al. 1987): mirror-image bands $E_{c,v}(k) = \pm\left[(E_g/2)^2 + E_g\hbar^2k^2/2m^*\right]^{1/2}$ evaluated at $k = \pi/R$:
+Two-band hyperbolic model (Wang et al. 1987): mirror-image bands $`E_{c,v}(k) = \pm\left[(E_g/2)^2 + E_g\hbar^2k^2/2m^*\right]^{1/2}`$ evaluated at $k = \pi/R$:
 
-$$E_\mathrm{HBM}(R) = \left[E_g^2 + \frac{2E_g\hbar^2}{m^*}\left(\frac{\pi}{R}\right)^2\right]^{1/2} - \frac{1.786\,e^2}{4\pi\varepsilon_0\varepsilon_\infty R}$$
+```math
+E_\mathrm{HBM}(R) = \left[E_g^2 + \frac{2E_g\hbar^2}{m^*}\left(\frac{\pi}{R}\right)^2\right]^{1/2} - \frac{1.786\,e^2}{4\pi\varepsilon_0\varepsilon_\infty R}
+```
 
 For small $k$ this reduces to the EMA; for a 5.1 nm dot the EMA confinement energy (1.36 eV) is more than three times the bulk gap, far outside the parabolic region. The measured sizing curve (Moreels et al. 2009), fitted to TEM size and first-exciton absorption:
 
-$$E_0(d) = 0.41 + \frac{1}{0.0252\,d^2 + 0.283\,d}\qquad (d\ \text{in nm},\ E_0\ \text{in eV})$$
+```math
+E_0(d) = 0.41 + \frac{1}{0.0252\,d^2 + 0.283\,d}\qquad (d\ \text{in nm},\ E_0\ \text{in eV})
+```
 
 The dot diameter for a given detection wavelength is found by solving $E_0(d) = hc/\lambda$ (Brent's method).
 
@@ -104,9 +110,11 @@ The dot diameter for a given detection wavelength is found by solving $E_0(d) = 
 
 Rock salt places Pb and S on a simple-cubic lattice of spacing $h = a/2$; every atom has six nearest neighbours. All lattice sites within $d/2$ of the dot centre are counted, and an atom is a surface atom when fewer than six neighbours are inside. The result depends slightly on where the centre sits, so it is averaged over an atom-centred and a cube-centred sphere. The continuum comparison is a shell one Pb–S distance thick:
 
-$$f_\mathrm{shell} = 1 - \left(1 - \frac{a}{d}\right)^3$$
+```math
+f_\mathrm{shell} = 1 - \left(1 - \frac{a}{d}\right)^3
+```
 
-For large dots the count tends to $f \to 6h\,\langle\max_i |n_i|\rangle/d$ with $\langle\max_i |n_i|\rangle = 0.831$ (a facet with unit normal $\mathbf n$ exposes $\max_i|n_i|/h^2$ sites per unit area); the validation suite checks this limit.
+For large dots the count tends to $`f \to 6h\,\langle\max_i |n_i|\rangle/d`$ with $\langle\max_i |n_i|\rangle = 0.831$ (a facet with unit normal $\mathbf n$ exposes $\max_i|n_i|/h^2$ sites per unit area); the validation suite checks this limit.
 
 ![Surface atoms](docs/figures/f_surface.png)
 
@@ -114,9 +122,11 @@ For large dots the count tends to $f \to 6h\,\langle\max_i |n_i|\rangle/d$ with 
 
 Carrier mobility in a dot film falls exponentially with the ligand length, $\mu \propto \exp(-\beta d)$. A factor 2.6 per Å gives $\beta = \ln 2.6 = 0.96$ Å⁻¹. For a rectangular barrier
 
-$$\beta = 2\kappa = \frac{2\sqrt{2m^*\varphi}}{\hbar}$$
+```math
+\beta = 2\kappa = \frac{2\sqrt{2m^*\varphi}}{\hbar}
+```
 
-so the same β corresponds to φ = 0.87 eV with $m^* = m_0$ or 2.0 eV with $m^* = 0.43\,m_0$; β is compared directly with alkanethiol monolayers (0.79 Å⁻¹) and a 4.5 eV vacuum gap (2.17 Å⁻¹).
+so the same β corresponds to φ = 0.87 eV with $`m^* = m_0`$ or 2.0 eV with $`m^* = 0.43\,m_0`$; β is compared directly with alkanethiol monolayers (0.79 Å⁻¹) and a 4.5 eV vacuum gap (2.17 Å⁻¹).
 
 ![Tunnelling](docs/figures/f_tunnel.png)
 
@@ -124,7 +134,9 @@ so the same β corresponds to φ = 0.87 eV with $m^* = m_0$ or 2.0 eV with $m^* 
 
 Ideal diode with the gap held constant in temperature (Sze & Ng):
 
-$$J_\mathrm{diff} \propto n_i^2 \propto T^3 e^{-E_g/kT},\qquad J_\mathrm{gen} \propto n_i \propto T^{1.5} e^{-E_g/2kT}$$
+```math
+J_\mathrm{diff} \propto n_i^2 \propto T^3 e^{-E_g/kT},\qquad J_\mathrm{gen} \propto n_i \propto T^{1.5} e^{-E_g/2kT}
+```
 
 Moving from 940 nm to 1400 nm dots ($E_g$ 1.32 → 0.89 eV) raises the ideal limit by $e^{\Delta E_g/kT}$ = 1.9 × 10⁷ (n = 1) or its square root 4.4 × 10³ (n = 2). The local halving interval on cooling is $\ln 2 / (d\ln J/dT)$. The measured InGaAs value at 25 °C is projected to −30 °C with both laws and compared with the cooled Sony IMX990.
 
@@ -132,14 +144,16 @@ Moving from 940 nm to 1400 nm dots ($E_g$ 1.32 → 0.89 eV) raises the ideal lim
 
 ### Detector metrics
 
-$$R = \frac{\eta q\lambda}{hc},\qquad D^*_\mathrm{shot} = \frac{R}{\sqrt{2qJ_d}}$$
+```math
+R = \frac{\eta q\lambda}{hc},\qquad D^*_\mathrm{shot} = \frac{R}{\sqrt{2qJ_d}}
+```
 
 ## Parameters
 
 | Parameter | Value | Source |
 |---|---|---|
 | PbS bulk gap $E_g$ (300 K) | 0.41 eV | [6, 7] |
-| Effective mass $m_e^* = m_h^*$ | 0.085 $m_0$ | [18] |
+| Effective mass $`m_e^* = m_h^*`$ | 0.085 $m_0$ | [18] |
 | High-frequency dielectric constant $\varepsilon_\infty$ | 17.2 | standard value for PbS; enters only the Coulomb term (0.06 eV at 5.1 nm) |
 | Coulomb coefficient | 1.786 | [5] |
 | Moreels sizing curve coefficients | 0.0252, 0.283 | [7] |
