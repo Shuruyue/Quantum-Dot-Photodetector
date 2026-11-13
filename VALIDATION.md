@@ -4,104 +4,104 @@
 
 | # | Category | Check | Model | Expected | Tolerance | Result | How it is checked |
 |---|---|---|---|---|---|---|---|
-| 1 | 常數 | ħ²/2m0 (eV nm²) | 0.0381 | 0.0381 | 1e-06 (rel) | PASS | 與 scipy.constants（CODATA 2018）比較，相對誤差 |
-| 2 | 常數 | e²/4πε0 (eV nm) | 1.44 | 1.44 | 1e-06 (rel) | PASS | 同上 |
-| 3 | 常數 | hc (eV nm) | 1240 | 1240 | 1e-06 (rel) | PASS | 同上 |
-| 4 | 常數 | k_B (eV/K) | 8.617e-05 | 8.617e-05 | 1e-06 (rel) | PASS | 同上 |
-| 5 | 量子尺寸 | Moreels 反解：E(d(940 nm)) = hc/λ (eV) | 1.319 | 1.319 | 1e-09 | PASS | 求得直徑後代回 Moreels 曲線，應回到原能量 |
-| 6 | 量子尺寸 | Moreels 反解：E(d(1400 nm)) = hc/λ (eV) | 0.8856 | 0.8856 | 1e-09 | PASS | 求得直徑後代回 Moreels 曲線，應回到原能量 |
-| 7 | 量子尺寸 | EMA 侷限能 @ d(1400 nm)：SI 單位重算 (eV) | 1.357 | 1.357 | 1e-06 (rel) | PASS | ħ²π²/(2R²)·(1/me*+1/mh*) 直接用 SI 常數計算，不經過模組常數 |
-| 8 | 量子尺寸 | 庫侖項 @ d(1400 nm)：SI 單位重算 (eV) | 0.05855 | 0.05855 | 1e-06 (rel) | PASS | 1.786e²/(4πε0εR) 以 SI 常數計算 |
-| 9 | 量子尺寸 | HBM 能隙 = 導帶能量 × 2（鏡像能帶） | 1.132 | 1.132 | 1e-12 | PASS | 由 E_c(k) = [(Eg/2)² + Eg ħ²k²/2m*]^½ 逐項計算 |
-| 10 | 量子尺寸 | 小 k 極限：HBM/EMA 侷限能比 @ d = 40 nm | -0.02561 | -0.02552 | 0.01 (rel) | PASS | √(1+2u) 的級數展開 1 + u − u²/2 + u³/2，u = EMA 侷限能/Eg；相對誤差 |
-| 11 | 量子尺寸 | 小 k 極限：HBM/EMA 侷限能比 @ d = 100 nm | -0.004279 | -0.004279 | 0.01 (rel) | PASS | √(1+2u) 的級數展開 1 + u − u²/2 + u³/2，u = EMA 侷限能/Eg；相對誤差 |
-| 12 | 量子尺寸 | 小 k 極限：HBM/EMA 侷限能比 @ d = 400 nm | -0.0002696 | -0.0002696 | 0.01 (rel) | PASS | √(1+2u) 的級數展開 1 + u − u²/2 + u³/2，u = EMA 侷限能/Eg；相對誤差 |
-| 13 | 量子尺寸 | 2.5–10 nm：HBM ≤ EMA | — | — | — | PASS | 雙曲線色散永遠在拋物線下方 |
-| 14 | 量子尺寸 | 2.5–10 nm：Moreels < HBM | — | — | — | PASS | 實驗曲線低於兩個無限位能障模型 |
-| 15 | 量子尺寸 | 2.5–10 nm：三條曲線都隨 d 單調下降 | — | — | — | PASS | 尺寸變大，能隙變小 |
-| 16 | 量子尺寸 | EMA 在 d = 1000 nm 回到塊材 0.41 eV | 0.4097 | 0.41 | 0.001 | PASS | 大顆極限 |
-| 17 | 量子尺寸 | HBM 在 d = 1000 nm 回到塊材 0.41 eV | 0.4097 | 0.41 | 0.001 | PASS | 大顆極限 |
-| 18 | 量子尺寸 | Moreels 在 d = 1000 nm 回到塊材 0.41 eV | 0.41 | 0.41 | 0.001 | PASS | 大顆極限 |
-| 19 | 量子尺寸 | EMA 高估倍數（定義式） | 2.73 | 2.73 | 1e-12 | PASS | (E_EMA − Eg)/(E_meas − Eg) |
-| 20 | 表面原子 | 兩種演算法計數一致 @ d = 2.000 nm（atom） | — | — | — | PASS | 向量化網格 vs 逐點集合迴圈：(N, 表面) = (171, 90) vs (171, 90) |
-| 21 | 表面原子 | 兩種演算法計數一致 @ d = 2.000 nm（interstitial） | — | — | — | PASS | 向量化網格 vs 逐點集合迴圈：(N, 表面) = (160, 96) vs (160, 96) |
-| 22 | 表面原子 | 兩種演算法計數一致 @ d = 3.056 nm（atom） | — | — | — | PASS | 向量化網格 vs 逐點集合迴圈：(N, 表面) = (587, 246) vs (587, 246) |
-| 23 | 表面原子 | 兩種演算法計數一致 @ d = 3.056 nm（interstitial） | — | — | — | PASS | 向量化網格 vs 逐點集合迴圈：(N, 表面) = (552, 240) vs (552, 240) |
-| 24 | 表面原子 | 兩種演算法計數一致 @ d = 5.107 nm（atom） | — | — | — | PASS | 向量化網格 vs 逐點集合迴圈：(N, 表面) = (2721, 714) vs (2721, 714) |
-| 25 | 表面原子 | 兩種演算法計數一致 @ d = 5.107 nm（interstitial） | — | — | — | PASS | 向量化網格 vs 逐點集合迴圈：(N, 表面) = (2608, 720) vs (2608, 720) |
-| 26 | 表面原子 | 原子數密度：N / (πd³/6 ÷ h³) @ d = 20 nm | 1.002 | 1 | 0.01 | PASS | rock salt 每 a³ 有 8 個原子 = 每 h³ 一個；大顆時計數應接近連續體積 |
-| 27 | 表面原子 | 殼層模型 @ d(940 nm)：手算 | 0.4769 | 0.4769 | 1e-12 | PASS | 1 − (內徑/外徑)³，殼層厚度 a/2 |
-| 28 | 表面原子 | E[max\|n_i\|]：Fibonacci 球面 vs Monte Carlo | 0.8312 | 0.8312 | 0.002 (rel) | PASS | 兩種取樣方法，相對誤差 |
-| 29 | 表面原子 | 大顆極限：f·d/(6h) 外插至 d → ∞ | 0.8302 | 0.8312 | 0.005 (rel) | PASS | 簡單立方晶面每單位面積暴露 max\|n_i\|/h² 個原子，故 f → 6h·E[max\|n_i\|]/d；d = 30–70 nm 對 1/d 線性外插，相對誤差 |
-| 30 | 表面原子 | 殼層模型大顆極限：f·d/(6h) @ d = 1000 nm | 0.9994 | 1 | 0.005 (rel) | PASS | f ≈ 6t/d |
-| 31 | 表面原子 | 表面比例隨尺寸遞減（3, 5, 8, 12 nm） | — | — | — | PASS | 0.433, 0.268, 0.176, 0.120 |
-| 32 | 表面原子 | 計數模型 < 殼層模型 @ 3.1 與 5.1 nm | — | — | — | PASS | 計數只算缺鄰居的原子，殼層模型把整層厚度 a/2 都算進去 |
-| 33 | 載子傳輸 | β = ln 2.6 → 每 Å 速率比 | 2.6 | 2.6 | 1e-12 | PASS | exp(β·1 Å) 應回到 2.6 |
-| 34 | 載子傳輸 | 真空 4.5 eV：β = 2(2m0φ)^½/ħ，SI 重算 (Å⁻¹) | 2.174 | 2.174 | 1e-06 (rel) | PASS | 以 SI 常數直接計算 |
-| 35 | 載子傳輸 | φ(β) 與 β(φ) 互為反函數 | 0.9555 | 0.9555 | 1e-12 | PASS | 代回 |
-| 36 | 載子傳輸 | SAM：(β, φ, m*) 自洽 | 0.79 | 0.79 | 1e-12 | PASS | 用推得的 m* 與 φ = 1.39 eV 重算 β，應回到 0.79 Å⁻¹ |
-| 37 | 載子傳輸 | β 排序：SAM < QD 薄膜 < 真空 | — | — | — | PASS | 0.79 < 0.956 < 2.174 Å⁻¹ |
-| 38 | 暗電流 | n = 2 比值 = √(n = 1 比值) | 4367 | 4367 | 1e-09 (rel) | PASS | exp(ΔE/2kT) = [exp(ΔE/kT)]^½ |
-| 39 | 暗電流 | 溫度外推在 T = T0 時不變 | 2.25e-09 | 2.25e-09 | 1e-12 (rel) | PASS | 定義 |
-| 40 | 暗電流 | 局部減半間隔介於精確降溫減半與升溫加倍之間（n = 1） | 5.581 | — | — | PASS | ln J 對 T 為凹函數；精確解 5.48 K（300 K 降溫減半）< 局部 5.58 K < 5.68 K（升溫加倍） |
-| 41 | 暗電流 | 局部減半間隔介於精確降溫減半與升溫加倍之間（n = 2） | 11.16 | — | — | PASS | ln J 對 T 為凹函數；精確解 10.78 K（300 K 降溫減半）< 局部 11.16 K < 11.58 K（升溫加倍） |
-| 42 | 暗電流 | d lnJ/dT：數值微分 vs 解析式（n = 1） | 0.1242 | 0.1242 | 1e-06 (rel) | PASS | 中央差分 |
-| 43 | 暗電流 | d lnJ/dT：數值微分 vs 解析式（n = 2） | 0.06209 | 0.06209 | 1e-06 (rel) | PASS | 中央差分 |
-| 44 | 暗電流 | IMX990：64.6 e⁻/s ÷ (5 µm)² (A/cm²) | 4.14e-11 | 4.14e-11 | 1e-12 (rel) | PASS | 手算 64.6 × q / (5×10⁻⁴ cm)² |
-| 45 | 暗電流 | 冷卻的 IMX990 落在 n = 1 與 n = 2 外推之間 | — | — | — | PASS | 1.66e-12 < 4.14e-11 < 6.1e-11 A/cm² |
-| 46 | 暗電流 | 量子點 dark current 不是能隙造成的 | — | — | — | PASS | 只看能隙，QD/InGaAs 應為 0.14×；實測 62× |
-| 47 | 偵測器 | Vafaie 2021：EQE 80 % @ 1550 nm → R (A/W) | 1 | 1 | 0.01 (rel) | PASS | R = ηqλ/hc 與論文報告的 1 A/W 比較 |
-| 48 | 偵測器 | R(η = 0.6, 1400 nm)：SI 重算 (A/W) | 0.6775 | 0.6775 | 1e-06 (rel) | PASS | ηqλ/(hc) |
-| 49 | 偵測器 | D* 單位換算：SI 重算 (Jones) | 4.722e+12 | 4.722e+12 | 1e-09 (rel) | PASS | 在 SI 中計算 R/(2qJ)^½ 再把 m 換成 cm |
-| 50 | 偵測器 | 實測 D* 低於 shot-noise 極限（兩種元件） | — | — | — | PASS | 還有熱雜訊、1/f 雜訊與讀出雜訊 |
-| 51 | 簡報數值 p4 | bulk PbS absorption edge (µm) | 3.024 | 3 | 0.05 | PASS | 投影片「0.41 eV · 3.0 µm」 |
-| 52 | 簡報數值 p4 | dot diameter for 1400 nm (nm) | 5.107 | 5.1 | 0.05 | PASS | 投影片「d = 5.1 nm」 / 講稿「5.1 nm」 |
-| 53 | 簡報數值 p4 | gap at 1400 nm (eV) | 0.8856 | 0.89 | 0.005 | PASS | 投影片「0.89 eV · 1400 nm」 |
-| 54 | 簡報數值 p4 | dot diameter for 940 nm (nm) | 3.056 | 3.1 | 0.05 | PASS | 投影片「d = 3.1 nm」 / 講稿「3.1 nm」 |
-| 55 | 簡報數值 p4 | gap at 940 nm (eV) | 1.319 | 1.32 | 0.005 | PASS | 投影片「1.32 eV · 940 nm」 |
-| 56 | 簡報數值 p4 | surface atoms, 3.1 nm dot (%) | 42.69 | 43 | 0.5 | PASS | 投影片「3.1 nm: 43 %」 / 講稿「約 43%」 |
-| 57 | 簡報數值 p4 | surface atoms, 5.1 nm dot (%) | 26.92 | 27 | 0.5 | PASS | 投影片「5.1 nm: 27 %」 / 講稿「約 27%」 |
-| 58 | 簡報數值 p6 | Coulomb coefficient in the Brus formula | 1.786 | 1.8 | 0.05 | PASS | 投影片「1.8e²/(4πεε₀R)」 |
-| 59 | 簡報數值 p6 | EMA gap at 5.1 nm (eV) | 1.708 | 1.71 | 0.005 | PASS | 投影片「EMA 1.71 eV」 / 講稿「EMA 給出 1.71 eV」 |
-| 60 | 簡報數值 p6 | hyperbolic-band gap at 5.1 nm (eV) | 1.073 | 1.07 | 0.005 | PASS | 投影片「hyperbolic bands [18] 1.07 eV」 / 講稿「給出 1.07 eV」 |
-| 61 | 簡報數值 p6 | measured gap at 5.1 nm (eV) | 0.8856 | 0.89 | 0.005 | PASS | 投影片「measured [7] 0.89 eV」 / 講稿「實驗值是 0.89 eV」 |
-| 62 | 簡報數值 p6 | EMA confinement overestimate (×) | 2.73 | 2.7 | 0.05 | PASS | 投影片「EMA 2.7× measured」 / 講稿「高估約 2.7 倍」 |
-| 63 | 簡報數值 p6 | HBM confinement overestimate (×) | 1.394 | 1.4 | 0.05 | PASS | 投影片「HBM 1.4× measured」 / 講稿「約 1.4 倍」 |
-| 64 | 簡報數值 p6 | EMA confinement energy at 5.1 nm (eV) | 1.357 | 1.36 | 0.005 | PASS | 講稿「EMA 的侷限能 1.36 eV」 |
-| 65 | 簡報數值 p6 | EMA confinement / bulk gap | 3.309 | — | — | PASS | 範圍 3–4；講稿「三倍多」 |
-| 66 | 簡報數值 p6 | HBM vs EMA confinement at d = 400 nm | 0.0002696 | — | — | PASS | 範圍 0–0.001；講稿「相差不到 0.1%」 |
-| 67 | 簡報數值 p6 | Moreels diameter for 1.29 eV (nm) | 3.138 | 3.14 | 0.005 | PASS | 講稿「我們的程式得到 3.14 nm」 |
-| 68 | 簡報數值 p8 | responsivity at η = 0.6, 1400 nm (A/W) | 0.6775 | 0.68 | 0.005 | PASS | 投影片「≈ 0.68 A/W at η = 0.6」 / 講稿「約為 0.68 A/W」 |
-| 69 | 簡報數值 p8 | β of the QD film (Å⁻¹) | 0.9555 | 0.96 | 0.005 | PASS | 投影片「β ≈ 0.96 Å⁻¹ [19, 20]」 / 講稿「β 約為 0.96 Å」 |
-| 70 | 簡報數值 p8 | κ of the QD film (Å⁻¹) | 0.4778 | 0.48 | 0.005 | PASS | 講稿「κ ≈ 0.48 Å」 |
-| 71 | 簡報數值 p8 | barrier of the QD film for m* = m0 (eV) | 0.8696 | 0.87 | 0.005 | PASS | 講稿「φ 約 0.87 eV」 |
-| 72 | 簡報數值 p8 | m* implied by the SAM fit (m0) | 0.4277 | 0.43 | 0.005 | PASS | 講稿「m* ≈ 0.43」 |
-| 73 | 簡報數值 p8 | barrier of the QD film for m* = 0.43 m0 (eV) | 2.033 | 2 | 0.05 | PASS | 講稿「φ 約 2.0 eV」 |
-| 74 | 簡報數值 p8 | rate factor per Å, alkane SAM | 2.203 | 2.2 | 0.05 | PASS | 投影片「β = 0.79 Å⁻¹, ×2.2/Å」 |
-| 75 | 簡報數值 p8 | β of a 4.5 eV vacuum gap (Å⁻¹) | 2.174 | 2.2 | 0.05 | PASS | 投影片「STM, β ≈ 2.2 Å⁻¹」 / 講稿「β 約為 2.2 Å」 |
-| 76 | 簡報數值 p8 | rate factor per Å, vacuum gap | 8.79 | 9 | 0.5 | PASS | 投影片「β ≈ 2.2 Å⁻¹, ×9/Å」 |
-| 77 | 簡報數值 p9 | Si absorption edge (µm) | 1.107 | 1.11 | 0.005 | PASS | 投影片「Silicon CMOS: edge 1.11 µm」 / 講稿「吸收邊約 1.1 µm」 |
-| 78 | 簡報數值 p9 | InGaAs absorption edge (µm) | 1.653 | 1.65 | 0.005 | PASS | 投影片「InGaAs: edge 1.65 µm」 / 講稿「約 1.65 µm」 |
-| 79 | 簡報數值 p9 | bulk PbS absorption edge (µm) | 3.024 | 3 | 0.05 | PASS | 投影片「up to bulk edge 3.0 µm」 / 講稿「約 3.0 µm」 |
-| 80 | 簡報數值 p10 | gap at 940 nm (eV) | 1.319 | 1.32 | 0.005 | PASS | 投影片「Eg 1.32 → 0.89 eV」 / 講稿「能隙由 1.32 eV」 |
-| 81 | 簡報數值 p10 | gap at 1400 nm (eV) | 0.8856 | 0.89 | 0.005 | PASS | 講稿「降到 0.89 eV」 |
-| 82 | 簡報數值 p10 | ideal-limit increase, diffusion (slide) | 1.907e+07 | 1.9e+07 | 5e+05 | PASS | 投影片「×1.9 × 10⁷」 |
-| 83 | 簡報數值 p10 | ideal-limit increase, diffusion (script) | 1.907e+07 | 2e+07 | 5e+06 | PASS | 講稿「約 2×10^{7} 倍」 |
-| 84 | 簡報數值 p10 | ideal-limit increase, generation (slide) | 4367 | 4400 | 50 | PASS | 投影片「×4.4 × 10³」 |
-| 85 | 簡報數值 p10 | ideal-limit increase, generation (script) | 4367 | 4000 | 500 | PASS | 講稿「4×10^{3} 倍」 |
-| 86 | 簡報數值 p10 | halving interval, diffusion (K) | 5.581 | 6 | 0.5 | PASS | 投影片「halves every ≈ 6 K」 / 講稿「每降溫約 6 K」 |
-| 87 | 簡報數值 p10 | halving interval, generation (K) | 11.16 | 11 | 0.5 | PASS | 投影片「≈ 11 K (generation)」 / 講稿「和 11 K」 |
-| 88 | 簡報數值 p10 | IMX990 dark current at −30 °C (nA/cm²) | 0.0414 | 0.041 | 0.0005 | PASS | 投影片「IMX990 [25]: 0.041」 |
-| 89 | 簡報數值 p10 | PbS CQD / InGaAs dark current (×) | 62.22 | 62 | 0.5 | PASS | 投影片「PbS CQD / InGaAs = 62×」 / 講稿「約為 InGaAs 的 62 倍」 |
-| 90 | 簡報數值 p11 | shot-noise D*, PbS CQD (Jones) | 4.722e+12 | 4.7e+12 | 5e+10 | PASS | 投影片「4.7 × 10¹² Jones」 / 講稿「4.7×10^{12} Jones」 |
-| 91 | 簡報數值 p11 | shot-noise D*, InGaAs (Jones) | 4.097e+13 | 4.1e+13 | 5e+11 | PASS | 投影片「4.1 × 10¹³ Jones」 / 講稿「4.1×10^{13} Jones」 |
-| 92 | 簡報數值 p11 | PbS CQD / InGaAs dark current, rounded (×) | 62.22 | 60 | 5 | PASS | 講稿「高約 60 倍」 |
-| 93 | 簡報數值 p11 | InGaAs / PbS CQD measured D* (×) | 13.75 | 14 | 0.5 | PASS | 講稿「D* 低約 14 倍」 |
-| 94 | 簡報數值 p12 | pixel area, Acuros / ST (×) | 85.73 | 86 | 0.5 | PASS | 投影片「Pixel area: 86×」 / 講稿「ST pixel 的 86 倍」 |
-| 95 | 簡報數值 p12 | pixel area, IMX990 / ST (×) | 9.526 | 9.5 | 0.05 | PASS | 投影片「86× and 9.5× the ST pixel」 / 講稿「約 9.5 倍」 |
-| 96 | 簡報數值 p13 | dark-current gap to InGaAs, rounded (×) | 62.22 | 60 | 5 | PASS | 投影片「close the ≈ 60× gap」 / 講稿「約 60 倍」 |
-| 97 | 簡報數值 p16 | EMA confinement overestimate (×) | 2.73 | 2.7 | 0.05 | PASS | 投影片「overestimates the confinement ×2.7」 / 講稿「高估約 2.7 倍」 |
-| 98 | 簡報數值 p16 | β of the QD film (Å⁻¹) | 0.9555 | 0.96 | 0.005 | PASS | 投影片「0.96 Å⁻¹」 |
-| 99 | 簡報數值 p16 | PbS CQD / InGaAs dark current (×) | 62.22 | 62 | 0.5 | PASS | 投影片「62×」 |
-| 100 | 簡報數值 p16 | PbS CQD / InGaAs dark current, rounded (×) | 62.22 | 60 | 5 | PASS | 投影片「dark current (≈ 60× InGaAs)」 |
-| 101 | 簡報數值 p16 | pixel area, IMX990 / ST (×) | 9.526 | 9.5 | 0.05 | PASS | 投影片「1/9.5 the area」 |
+| 1 | Constants | ħ²/2m0 (eV nm²) | 0.0381 | 0.0381 | 1e-06 (rel) | PASS | compared with scipy.constants (CODATA 2018), relative error |
+| 2 | Constants | e²/4πε0 (eV nm) | 1.44 | 1.44 | 1e-06 (rel) | PASS | as above |
+| 3 | Constants | hc (eV nm) | 1240 | 1240 | 1e-06 (rel) | PASS | as above |
+| 4 | Constants | k_B (eV/K) | 8.617e-05 | 8.617e-05 | 1e-06 (rel) | PASS | as above |
+| 5 | Quantum size | Moreels inversion: E(d(940 nm)) = hc/λ (eV) | 1.319 | 1.319 | 1e-09 | PASS | the diameter put back into the Moreels curve returns the starting energy |
+| 6 | Quantum size | Moreels inversion: E(d(1400 nm)) = hc/λ (eV) | 0.8856 | 0.8856 | 1e-09 | PASS | the diameter put back into the Moreels curve returns the starting energy |
+| 7 | Quantum size | EMA confinement at d(1400 nm), recomputed in SI (eV) | 1.357 | 1.357 | 1e-06 (rel) | PASS | ħ²π²/(2R²)·(1/me*+1/mh*) with SI constants, bypassing the package constants |
+| 8 | Quantum size | Coulomb term at d(1400 nm), recomputed in SI (eV) | 0.05855 | 0.05855 | 1e-06 (rel) | PASS | 1.786e²/(4πε0εR) with SI constants |
+| 9 | Quantum size | HBM gap = 2 × conduction-band energy (mirror bands) | 1.132 | 1.132 | 1e-12 | PASS | term by term from E_c(k) = [(Eg/2)² + Eg ħ²k²/2m*]^½ |
+| 10 | Quantum size | small-k limit: HBM/EMA confinement ratio at d = 40 nm | -0.02561 | -0.02552 | 0.01 (rel) | PASS | series √(1+2u) = 1 + u − u²/2 + u³/2 − …, u = EMA confinement / Eg; relative error |
+| 11 | Quantum size | small-k limit: HBM/EMA confinement ratio at d = 100 nm | -0.004279 | -0.004279 | 0.01 (rel) | PASS | series √(1+2u) = 1 + u − u²/2 + u³/2 − …, u = EMA confinement / Eg; relative error |
+| 12 | Quantum size | small-k limit: HBM/EMA confinement ratio at d = 400 nm | -0.0002696 | -0.0002696 | 0.01 (rel) | PASS | series √(1+2u) = 1 + u − u²/2 + u³/2 − …, u = EMA confinement / Eg; relative error |
+| 13 | Quantum size | 2.5–10 nm: HBM ≤ EMA | — | — | — | PASS | the hyperbolic dispersion always lies below the parabola |
+| 14 | Quantum size | 2.5–10 nm: Moreels < HBM | — | — | — | PASS | the measured curve lies below both infinite-wall models |
+| 15 | Quantum size | 2.5–10 nm: all three curves fall monotonically with d | — | — | — | PASS | larger dot, smaller gap |
+| 16 | Quantum size | EMA returns to the bulk 0.41 eV at d = 1000 nm | 0.4097 | 0.41 | 0.001 | PASS | large-dot limit |
+| 17 | Quantum size | HBM returns to the bulk 0.41 eV at d = 1000 nm | 0.4097 | 0.41 | 0.001 | PASS | large-dot limit |
+| 18 | Quantum size | Moreels returns to the bulk 0.41 eV at d = 1000 nm | 0.41 | 0.41 | 0.001 | PASS | large-dot limit |
+| 19 | Quantum size | EMA overestimate factor (definition) | 2.73 | 2.73 | 1e-12 | PASS | (E_EMA − Eg)/(E_meas − Eg) |
+| 20 | Surface atoms | two counting algorithms agree at d = 2.000 nm (atom) | — | — | — | PASS | vectorised grid vs explicit set loop: (N, surface) = (171, 90) vs (171, 90) |
+| 21 | Surface atoms | two counting algorithms agree at d = 2.000 nm (interstitial) | — | — | — | PASS | vectorised grid vs explicit set loop: (N, surface) = (160, 96) vs (160, 96) |
+| 22 | Surface atoms | two counting algorithms agree at d = 3.056 nm (atom) | — | — | — | PASS | vectorised grid vs explicit set loop: (N, surface) = (587, 246) vs (587, 246) |
+| 23 | Surface atoms | two counting algorithms agree at d = 3.056 nm (interstitial) | — | — | — | PASS | vectorised grid vs explicit set loop: (N, surface) = (552, 240) vs (552, 240) |
+| 24 | Surface atoms | two counting algorithms agree at d = 5.107 nm (atom) | — | — | — | PASS | vectorised grid vs explicit set loop: (N, surface) = (2721, 714) vs (2721, 714) |
+| 25 | Surface atoms | two counting algorithms agree at d = 5.107 nm (interstitial) | — | — | — | PASS | vectorised grid vs explicit set loop: (N, surface) = (2608, 720) vs (2608, 720) |
+| 26 | Surface atoms | atom density: N / (πd³/6 ÷ h³) at d = 20 nm | 1.002 | 1 | 0.01 | PASS | rock salt has 8 atoms per a³, one per h³; for a large dot the count approaches the continuum volume |
+| 27 | Surface atoms | shell model at d(940 nm): by hand | 0.4769 | 0.4769 | 1e-12 | PASS | 1 − (inner/outer diameter)³, shell thickness a/2 |
+| 28 | Surface atoms | E[max\|n_i\|]: Fibonacci sphere vs Monte Carlo | 0.8312 | 0.8312 | 0.002 (rel) | PASS | two sampling methods, relative error |
+| 29 | Surface atoms | large-dot limit: f·d/(6h) extrapolated to d → ∞ | 0.8302 | 0.8312 | 0.005 (rel) | PASS | a simple-cubic facet exposes max\|n_i\|/h² atoms per unit area, so f → 6h·E[max\|n_i\|]/d; linear extrapolation in 1/d over d = 30–70 nm, relative error |
+| 30 | Surface atoms | shell-model large-dot limit: f·d/(6h) at d = 1000 nm | 0.9994 | 1 | 0.005 (rel) | PASS | f ≈ 6t/d |
+| 31 | Surface atoms | surface fraction falls with size (3, 5, 8, 12 nm) | — | — | — | PASS | 0.433, 0.268, 0.176, 0.120 |
+| 32 | Surface atoms | atom count < shell model at 3.1 and 5.1 nm | — | — | — | PASS | the count includes only atoms that miss a neighbour; the shell model counts the whole a/2 layer |
+| 33 | Transport | β = ln 2.6 → rate factor per Å | 2.6 | 2.6 | 1e-12 | PASS | exp(β·1 Å) returns 2.6 |
+| 34 | Transport | vacuum 4.5 eV: β = 2(2m0φ)^½/ħ, recomputed in SI (Å⁻¹) | 2.174 | 2.174 | 1e-06 (rel) | PASS | computed directly with SI constants |
+| 35 | Transport | φ(β) and β(φ) are inverse functions | 0.9555 | 0.9555 | 1e-12 | PASS | round trip |
+| 36 | Transport | SAM: (β, φ, m*) self-consistent | 0.79 | 0.79 | 1e-12 | PASS | β recomputed from the derived m* and φ = 1.39 eV returns 0.79 Å⁻¹ |
+| 37 | Transport | β ordering: SAM < QD film < vacuum | — | — | — | PASS | 0.79 < 0.956 < 2.174 Å⁻¹ |
+| 38 | Dark current | n = 2 ratio = √(n = 1 ratio) | 4367 | 4367 | 1e-09 (rel) | PASS | exp(ΔE/2kT) = [exp(ΔE/kT)]^½ |
+| 39 | Dark current | temperature projection unchanged at T = T0 | 2.25e-09 | 2.25e-09 | 1e-12 (rel) | PASS | definition |
+| 40 | Dark current | local halving interval lies between the exact halving and doubling steps (n = 1) | 5.581 | — | — | PASS | ln J is concave in T: exact 5.48 K (halving on cooling from 300 K) < local 5.58 K < 5.68 K (doubling on warming) |
+| 41 | Dark current | local halving interval lies between the exact halving and doubling steps (n = 2) | 11.16 | — | — | PASS | ln J is concave in T: exact 10.78 K (halving on cooling from 300 K) < local 11.16 K < 11.58 K (doubling on warming) |
+| 42 | Dark current | d lnJ/dT: numerical vs analytic (n = 1) | 0.1242 | 0.1242 | 1e-06 (rel) | PASS | central difference |
+| 43 | Dark current | d lnJ/dT: numerical vs analytic (n = 2) | 0.06209 | 0.06209 | 1e-06 (rel) | PASS | central difference |
+| 44 | Dark current | IMX990: 64.6 e⁻/s ÷ (5 µm)² (A/cm²) | 4.14e-11 | 4.14e-11 | 1e-12 (rel) | PASS | by hand: 64.6 × q / (5×10⁻⁴ cm)² |
+| 45 | Dark current | cooled IMX990 lies between the n = 1 and n = 2 projections | — | — | — | PASS | 1.66e-12 < 4.14e-11 < 6.1e-11 A/cm² |
+| 46 | Dark current | the QD dark current is not set by the gap | — | — | — | PASS | by the gap alone QD/InGaAs would be 0.14×; measured 62× |
+| 47 | Detector | Vafaie 2021: EQE 80 % at 1550 nm → R (A/W) | 1 | 1 | 0.01 (rel) | PASS | R = ηqλ/hc compared with the reported 1 A/W |
+| 48 | Detector | R(η = 0.6, 1400 nm), recomputed in SI (A/W) | 0.6775 | 0.6775 | 1e-06 (rel) | PASS | ηqλ/(hc) |
+| 49 | Detector | D* unit conversion, recomputed in SI (Jones) | 4.722e+12 | 4.722e+12 | 1e-09 (rel) | PASS | R/(2qJ)^½ in SI, then m converted to cm |
+| 50 | Detector | measured D* below the shot-noise limit (both devices) | — | — | — | PASS | thermal, 1/f and read-out noise add to the shot noise |
+| 51 | Slide 4 | bulk PbS absorption edge (µm) | 3.024 | 3 | 0.05 | PASS | slide: “0.41 eV · 3.0 µm” |
+| 52 | Slide 4 | dot diameter for 1400 nm (nm) | 5.107 | 5.1 | 0.05 | PASS | slide: “d = 5.1 nm” / script: “5.1 nm” |
+| 53 | Slide 4 | gap at 1400 nm (eV) | 0.8856 | 0.89 | 0.005 | PASS | slide: “0.89 eV · 1400 nm” |
+| 54 | Slide 4 | dot diameter for 940 nm (nm) | 3.056 | 3.1 | 0.05 | PASS | slide: “d = 3.1 nm” / script: “3.1 nm” |
+| 55 | Slide 4 | gap at 940 nm (eV) | 1.319 | 1.32 | 0.005 | PASS | slide: “1.32 eV · 940 nm” |
+| 56 | Slide 4 | surface atoms, 3.1 nm dot (%) | 42.69 | 43 | 0.5 | PASS | slide: “3.1 nm: 43 %” / script: “about 43 %” |
+| 57 | Slide 4 | surface atoms, 5.1 nm dot (%) | 26.92 | 27 | 0.5 | PASS | slide: “5.1 nm: 27 %” / script: “about 27 %” |
+| 58 | Slide 6 | Coulomb coefficient in the Brus formula | 1.786 | 1.8 | 0.05 | PASS | slide: “1.8e²/(4πεε₀R)” |
+| 59 | Slide 6 | EMA gap at 5.1 nm (eV) | 1.708 | 1.71 | 0.005 | PASS | slide: “EMA 1.71 eV” / script: “EMA gives 1.71 eV” |
+| 60 | Slide 6 | hyperbolic-band gap at 5.1 nm (eV) | 1.073 | 1.07 | 0.005 | PASS | slide: “hyperbolic bands [18] 1.07 eV” / script: “gives 1.07 eV” |
+| 61 | Slide 6 | measured gap at 5.1 nm (eV) | 0.8856 | 0.89 | 0.005 | PASS | slide: “measured [7] 0.89 eV” / script: “the measured value is 0.89 eV” |
+| 62 | Slide 6 | EMA confinement overestimate (×) | 2.73 | 2.7 | 0.05 | PASS | slide: “EMA 2.7× measured” / script: “overestimates by about 2.7 times” |
+| 63 | Slide 6 | HBM confinement overestimate (×) | 1.394 | 1.4 | 0.05 | PASS | slide: “HBM 1.4× measured” / script: “about 1.4 times” |
+| 64 | Slide 6 | EMA confinement energy at 5.1 nm (eV) | 1.357 | 1.36 | 0.005 | PASS | script: “the EMA confinement energy, 1.36 eV” |
+| 65 | Slide 6 | EMA confinement / bulk gap | 3.309 | — | — | PASS | range 3–4; script: “more than three times” |
+| 66 | Slide 6 | HBM vs EMA confinement at d = 400 nm | 0.0002696 | — | — | PASS | range 0–0.001; script: “differ by less than 0.1 %” |
+| 67 | Slide 6 | Moreels diameter for 1.29 eV (nm) | 3.138 | 3.14 | 0.005 | PASS | script: “our code gives 3.14 nm” |
+| 68 | Slide 8 | responsivity at η = 0.6, 1400 nm (A/W) | 0.6775 | 0.68 | 0.005 | PASS | slide: “≈ 0.68 A/W at η = 0.6” / script: “about 0.68 A/W” |
+| 69 | Slide 8 | β of the QD film (Å⁻¹) | 0.9555 | 0.96 | 0.005 | PASS | slide: “β ≈ 0.96 Å⁻¹ [19, 20]” / script: “β is about 0.96 Å⁻¹” |
+| 70 | Slide 8 | κ of the QD film (Å⁻¹) | 0.4778 | 0.48 | 0.005 | PASS | script: “κ ≈ 0.48 Å⁻¹” |
+| 71 | Slide 8 | barrier of the QD film for m* = m0 (eV) | 0.8696 | 0.87 | 0.005 | PASS | script: “φ is about 0.87 eV” |
+| 72 | Slide 8 | m* implied by the SAM fit (m0) | 0.4277 | 0.43 | 0.005 | PASS | script: “m* ≈ 0.43 m0” |
+| 73 | Slide 8 | barrier of the QD film for m* = 0.43 m0 (eV) | 2.033 | 2 | 0.05 | PASS | script: “φ is about 2.0 eV” |
+| 74 | Slide 8 | rate factor per Å, alkane SAM | 2.203 | 2.2 | 0.05 | PASS | slide: “β = 0.79 Å⁻¹, ×2.2/Å” |
+| 75 | Slide 8 | β of a 4.5 eV vacuum gap (Å⁻¹) | 2.174 | 2.2 | 0.05 | PASS | slide: “STM, β ≈ 2.2 Å⁻¹” / script: “β is about 2.2 Å⁻¹” |
+| 76 | Slide 8 | rate factor per Å, vacuum gap | 8.79 | 9 | 0.5 | PASS | slide: “β ≈ 2.2 Å⁻¹, ×9/Å” |
+| 77 | Slide 9 | Si absorption edge (µm) | 1.107 | 1.11 | 0.005 | PASS | slide: “Silicon CMOS: edge 1.11 µm” / script: “absorption edge about 1.1 µm” |
+| 78 | Slide 9 | InGaAs absorption edge (µm) | 1.653 | 1.65 | 0.005 | PASS | slide: “InGaAs: edge 1.65 µm” / script: “about 1.65 µm” |
+| 79 | Slide 9 | bulk PbS absorption edge (µm) | 3.024 | 3 | 0.05 | PASS | slide: “up to bulk edge 3.0 µm” / script: “about 3.0 µm” |
+| 80 | Slide 10 | gap at 940 nm (eV) | 1.319 | 1.32 | 0.005 | PASS | slide: “Eg 1.32 → 0.89 eV” / script: “the gap falls from 1.32 eV” |
+| 81 | Slide 10 | gap at 1400 nm (eV) | 0.8856 | 0.89 | 0.005 | PASS | script: “to 0.89 eV” |
+| 82 | Slide 10 | ideal-limit increase, diffusion (slide) | 1.907e+07 | 1.9e+07 | 5e+05 | PASS | slide: “×1.9 × 10⁷” |
+| 83 | Slide 10 | ideal-limit increase, diffusion (script) | 1.907e+07 | 2e+07 | 5e+06 | PASS | script: “about 2 × 10⁷ times” |
+| 84 | Slide 10 | ideal-limit increase, generation (slide) | 4367 | 4400 | 50 | PASS | slide: “×4.4 × 10³” |
+| 85 | Slide 10 | ideal-limit increase, generation (script) | 4367 | 4000 | 500 | PASS | script: “4 × 10³ times” |
+| 86 | Slide 10 | halving interval, diffusion (K) | 5.581 | 6 | 0.5 | PASS | slide: “halves every ≈ 6 K” / script: “for every ≈ 6 K of cooling” |
+| 87 | Slide 10 | halving interval, generation (K) | 11.16 | 11 | 0.5 | PASS | slide: “≈ 11 K (generation)” / script: “and 11 K” |
+| 88 | Slide 10 | IMX990 dark current at −30 °C (nA/cm²) | 0.0414 | 0.041 | 0.0005 | PASS | slide: “IMX990 [25]: 0.041” |
+| 89 | Slide 10 | PbS CQD / InGaAs dark current (×) | 62.22 | 62 | 0.5 | PASS | slide: “PbS CQD / InGaAs = 62×” / script: “about 62 times that of InGaAs” |
+| 90 | Slide 11 | shot-noise D*, PbS CQD (Jones) | 4.722e+12 | 4.7e+12 | 5e+10 | PASS | slide: “4.7 × 10¹² Jones” / script: “4.7 × 10¹² Jones” |
+| 91 | Slide 11 | shot-noise D*, InGaAs (Jones) | 4.097e+13 | 4.1e+13 | 5e+11 | PASS | slide: “4.1 × 10¹³ Jones” / script: “4.1 × 10¹³ Jones” |
+| 92 | Slide 11 | PbS CQD / InGaAs dark current, rounded (×) | 62.22 | 60 | 5 | PASS | script: “about 60 times higher” |
+| 93 | Slide 11 | InGaAs / PbS CQD measured D* (×) | 13.75 | 14 | 0.5 | PASS | script: “D* about 14 times lower” |
+| 94 | Slide 12 | pixel area, Acuros / ST (×) | 85.73 | 86 | 0.5 | PASS | slide: “Pixel area: 86×” / script: “86 times the ST pixel” |
+| 95 | Slide 12 | pixel area, IMX990 / ST (×) | 9.526 | 9.5 | 0.05 | PASS | slide: “86× and 9.5× the ST pixel” / script: “about 9.5 times” |
+| 96 | Slide 13 | dark-current gap to InGaAs, rounded (×) | 62.22 | 60 | 5 | PASS | slide: “close the ≈ 60× gap” / script: “about 60 times” |
+| 97 | Slide 16 | EMA confinement overestimate (×) | 2.73 | 2.7 | 0.05 | PASS | slide: “overestimates the confinement ×2.7” / script: “overestimates by about 2.7 times” |
+| 98 | Slide 16 | β of the QD film (Å⁻¹) | 0.9555 | 0.96 | 0.005 | PASS | slide: “0.96 Å⁻¹” |
+| 99 | Slide 16 | PbS CQD / InGaAs dark current (×) | 62.22 | 62 | 0.5 | PASS | slide: “62×” |
+| 100 | Slide 16 | PbS CQD / InGaAs dark current, rounded (×) | 62.22 | 60 | 5 | PASS | slide: “dark current (≈ 60× InGaAs)” |
+| 101 | Slide 16 | pixel area, IMX990 / ST (×) | 9.526 | 9.5 | 0.05 | PASS | slide: “1/9.5 the area” |

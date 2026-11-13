@@ -1,15 +1,15 @@
 """Compute every number used in the report → outputs/results.json."""
 import json
 import os
-import sys
 
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
+from _path import OUTPUTS
+
 from qd_photodetector.summary import compute  # noqa: E402
 
 if __name__ == "__main__":
     r = compute()
-    os.makedirs("outputs", exist_ok=True)
-    with open("outputs/results.json", "w") as f:
+    os.makedirs(OUTPUTS, exist_ok=True)
+    with open(os.path.join(OUTPUTS, "results.json"), "w", encoding="utf8") as f:
         json.dump(r, f, indent=1)
     for k, v in r.items():
         print(f"{k:24s} {v:.6g}")

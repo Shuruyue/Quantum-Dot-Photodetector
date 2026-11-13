@@ -8,7 +8,8 @@ import os
 import sys
 from dataclasses import asdict
 
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
+from _path import OUTPUTS, ROOT
+
 from qd_photodetector.validation import run_all, to_markdown  # noqa: E402
 
 if __name__ == "__main__":
@@ -18,9 +19,9 @@ if __name__ == "__main__":
     ok = sum(c.passed for c in rows)
     print(f"{ok}/{len(rows)} checks passed")
     if "--markdown" in sys.argv:
-        os.makedirs("outputs", exist_ok=True)
-        with open("outputs/validation_table.json", "w", encoding="utf8") as f:
+        os.makedirs(OUTPUTS, exist_ok=True)
+        with open(os.path.join(OUTPUTS, "validation_table.json"), "w", encoding="utf8") as f:
             json.dump([asdict(c) for c in rows], f, ensure_ascii=False, indent=1)
-        with open("VALIDATION.md", "w", encoding="utf8") as f:
+        with open(os.path.join(ROOT, "VALIDATION.md"), "w", encoding="utf8", newline="\n") as f:
             f.write(to_markdown(rows))
     sys.exit(0 if ok == len(rows) else 1)

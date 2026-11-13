@@ -194,7 +194,7 @@ The EMA and hyperbolic models assume isotropic masses and infinite walls; PbS ha
 
 ## References
 
-Numbers match the reference list of the presentation.
+Numbering follows the reference list of the presentation; only the references that enter a calculation are listed here.
 
 5. L. E. Brus, *J. Chem. Phys.* **80**, 4403–4409 (1984). [doi:10.1063/1.447218](https://doi.org/10.1063/1.447218)
 6. F. W. Wise, *Acc. Chem. Res.* **33**, 773–780 (2000). [doi:10.1021/ar970220q](https://doi.org/10.1021/ar970220q)
