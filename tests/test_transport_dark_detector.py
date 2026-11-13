@@ -2,9 +2,9 @@ import math
 
 import pytest
 
-from qd_photodetector import dark_current as dc
-from qd_photodetector import detector as det
-from qd_photodetector import transport as tr
+from quantum_dot_photodetector import dark_current as dc
+from quantum_dot_photodetector import detector as det
+from quantum_dot_photodetector import transport as tr
 
 
 def test_beta_barrier_round_trip():

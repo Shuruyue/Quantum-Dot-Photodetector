@@ -1,6 +1,6 @@
 import pytest
 
-from qd_photodetector import surface as sf
+from quantum_dot_photodetector import surface as sf
 
 
 @pytest.mark.parametrize("d", [1.5, 2.0, 3.056, 4.0])

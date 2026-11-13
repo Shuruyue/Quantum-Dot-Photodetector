@@ -3,9 +3,9 @@ import math
 import numpy as np
 import pytest
 
-from qd_photodetector import data as D
-from qd_photodetector import quantum_size as qs
-from qd_photodetector.constants import HC
+from quantum_dot_photodetector import data as D
+from quantum_dot_photodetector import quantum_size as qs
+from quantum_dot_photodetector.constants import HC
 
 
 @pytest.mark.parametrize("lam", [940.0, 1400.0, 1550.0])

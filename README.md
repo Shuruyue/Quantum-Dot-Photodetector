@@ -1,6 +1,6 @@
-# PbS-QD-Photodetector
+# Quantum-Dot-Photodetector
 
-[![CI](https://github.com/Shuruyue/PbS-QD-Photodetector/actions/workflows/ci.yml/badge.svg)](https://github.com/Shuruyue/PbS-QD-Photodetector/actions/workflows/ci.yml)
+[![CI](https://github.com/Shuruyue/Quantum-Dot-Photodetector/actions/workflows/ci.yml/badge.svg)](https://github.com/Shuruyue/Quantum-Dot-Photodetector/actions/workflows/ci.yml)
 ![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue)
 ![License: MIT](https://img.shields.io/badge/license-MIT-green)
 
@@ -8,7 +8,7 @@
 
 The calculations behind the quantum-dot part of the report *Nanoscale Detectors: Quantum Dots & MOFs* (Nanotechnology, Group 10). A PbS colloidal quantum-dot (CQD) film coated on a silicon readout chip absorbs visible and short-wave infrared (SWIR) light; the dot size sets the absorption edge. The models here answer four questions: how dot size sets the band gap, how many atoms sit at the dot surface, how fast carriers tunnel between dots, and why CQD photodiodes have more dark current than InGaAs.
 
-Every calculated number on the slides and in the spoken script is produced by this package and listed in `qd_photodetector/slides.py` with the slide it appears on; the validation suite checks each one against the model. Literature values (measured dark currents, D*, pixel pitches) are inputs and are listed with their sources under Parameters.
+Every calculated number on the slides and in the spoken script is produced by this package and listed in `quantum_dot_photodetector/slides.py` with the slide it appears on; the validation suite checks each one against the model. Literature values (measured dark currents, D*, pixel pitches) are inputs and are listed with their sources under Parameters.
 
 Energies are in eV, dot diameters in nm, tunnelling lengths in Å, dark-current densities in A cm⁻².
 
@@ -28,8 +28,8 @@ Energies are in eV, dot diameters in nm, tunnelling lengths in Å, dark-current 
 ### Installation
 
 ```bash
-git clone https://github.com/Shuruyue/PbS-QD-Photodetector.git
-cd PbS-QD-Photodetector
+git clone https://github.com/Shuruyue/Quantum-Dot-Photodetector.git
+cd Quantum-Dot-Photodetector
 pip install -e ".[dev]"
 ```
 
@@ -41,7 +41,7 @@ python scripts/make_figures.py    # all figures → docs/figures/
 ```
 
 ```python
-from qd_photodetector import quantum_size as qs, surface as sf
+from quantum_dot_photodetector import quantum_size as qs, surface as sf
 
 d = qs.diameter_for_wavelength(1400)          # 5.107 nm dot for ST's 1400 nm sensor
 print(qs.gap_ema(d), qs.gap_hbm(d), qs.gap_moreels(d))   # 1.708  1.073  0.886 eV
@@ -60,8 +60,8 @@ python scripts/validate.py --markdown   # 101 checks → outputs/validation_tabl
 ## Project Structure
 
 ```
-PbS-QD-Photodetector/
-├── qd_photodetector/
+Quantum-Dot-Photodetector/
+├── quantum_dot_photodetector/
 │   ├── constants.py      # ħ²/2m0, e²/4πε0, hc, k_B in eV / nm units
 │   ├── data.py           # material parameters and published device data, with sources
 │   ├── quantum_size.py   # EMA, hyperbolic bands, Moreels sizing curve and its inverse

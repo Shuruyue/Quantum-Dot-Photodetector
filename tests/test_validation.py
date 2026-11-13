@@ -1,6 +1,6 @@
-from qd_photodetector import slides
-from qd_photodetector.summary import compute
-from qd_photodetector.validation import run_all, to_markdown
+from quantum_dot_photodetector import slides
+from quantum_dot_photodetector.summary import compute
+from quantum_dot_photodetector.validation import run_all, to_markdown
 
 
 def test_every_check_passes():

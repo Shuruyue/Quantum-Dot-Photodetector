@@ -3,7 +3,7 @@ requires = ["setuptools>=61"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "pbs-qd-photodetector"
+name = "quantum-dot-photodetector"
 version = "0.1.0"
 description = "Size, surface, transport and dark-current models of PbS colloidal quantum-dot photodetectors, with every number in the report checked"
 readme = "README.md"
@@ -16,7 +16,7 @@ dependencies = ["numpy>=1.24", "scipy>=1.10", "matplotlib>=3.7"]
 dev = ["pytest>=7"]
 
 [tool.setuptools]
-packages = ["qd_photodetector"]
+packages = ["quantum_dot_photodetector"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

@@ -4,7 +4,7 @@ import os
 
 from _path import OUTPUTS
 
-from qd_photodetector.summary import compute  # noqa: E402
+from quantum_dot_photodetector.summary import compute  # noqa: E402
 
 if __name__ == "__main__":
     r = compute()

@@ -10,7 +10,7 @@ from dataclasses import asdict
 
 from _path import OUTPUTS, ROOT
 
-from qd_photodetector.validation import run_all, to_markdown  # noqa: E402
+from quantum_dot_photodetector.validation import run_all, to_markdown  # noqa: E402
 
 if __name__ == "__main__":
     rows = run_all()
