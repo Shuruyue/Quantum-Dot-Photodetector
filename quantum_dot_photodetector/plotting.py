@@ -80,11 +80,12 @@ def fig_tunnel(outdir):
     r = compute()
     x = np.linspace(0, 6, 100)
     fig, ax = plt.subplots(figsize=(WIDTH_IN, WIDTH_IN * 0.5))
-    lines = ((f"QD film [19, 20]: β = {r['beta_qd']:.2f} Å⁻¹", r["beta_qd"], BLUE),
-             (f"alkane SAM [21]: β = {D.BETA_SAM:.2f} Å⁻¹", D.BETA_SAM, ORANGE),
-             (f"vacuum gap, φ = {D.PHI_VAC} eV: β = {r['beta_vac']:.2f} Å⁻¹", r["beta_vac"], AQUA))
-    for lab, b, c in lines:
-        ax.semilogy(x, [tr.relative_rate(b, v) for v in x], color=c, label=lab)
+    lines = ((f"QD film [19]: β = {r['beta_qd']:.2f} Å⁻¹", r["beta_qd"], BLUE, "-"),
+             (f"as presented (×2.6/Å): β = {r['beta_qd_presented']:.2f} Å⁻¹", r["beta_qd_presented"], BLUE, ":"),
+             (f"alkane SAM [21]: β = {D.BETA_SAM:.2f} Å⁻¹", D.BETA_SAM, ORANGE, "-"),
+             (f"vacuum gap, φ = {D.PHI_VAC} eV: β = {r['beta_vac']:.2f} Å⁻¹", r["beta_vac"], AQUA, "-"))
+    for lab, b, c, style in lines:
+        ax.semilogy(x, [tr.relative_rate(b, v) for v in x], color=c, linestyle=style, label=lab)
     ax.set(xlim=(0, 6), ylim=(1e-6, 1.5), xlabel="Extra gap Δd (Å)", ylabel="Relative rate exp(−β·Δd)")
     ax.legend(loc="lower left")
     return _save(fig, outdir, "f_tunnel.png")

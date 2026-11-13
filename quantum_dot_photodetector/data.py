@@ -23,7 +23,10 @@ EG_SI = 1.12           # eV, Si at 300 K [22]
 EG_INGAAS = 0.75       # eV, In0.53Ga0.47As at room temperature [24]
 
 # ---------------------------------------------------------------- transport between dots
-MOBILITY_FACTOR_PER_A = 2.6  # mobility gain per Å of shorter ligand, PbSe + alkanedithiols [19, 20]
+BETA_QD = (1.08, 1.10)       # Å⁻¹, mobility decay with ligand length, alkanedithiol-treated PbSe NC films [19]
+# the presentation used a gain of 2.6 per Å of shorter ligand, from the review [20]'s summary of [19];
+# [19] itself reports BETA_QD (2.9-3.0 per Å). See README, Correction.
+MOBILITY_FACTOR_PER_A_PRESENTED = 2.6
 BETA_SAM = 0.79              # Å⁻¹, tunnelling decay of alkanethiol monolayers [21]
 PHI_SAM = 1.39               # eV, barrier height fitted together with BETA_SAM [21]
 PHI_VAC = 4.5                # eV, typical metal work function for an STM vacuum gap (assumed)

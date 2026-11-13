@@ -4,11 +4,10 @@ Lengths in Å, energies in eV, masses in units of m0.
 """
 import math
 
-from . import data as D
 from .constants import HB2_2M0_A
 
 
-def beta_from_factor(factor_per_A=D.MOBILITY_FACTOR_PER_A):
+def beta_from_factor(factor_per_A):
     """A rate that changes by `factor` per Å has β = ln(factor)."""
     return math.log(factor_per_A)
 

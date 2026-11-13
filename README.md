@@ -21,7 +21,7 @@ Energies are in eV, dot diameters in nm, tunnelling lengths in Å, dark-current 
 - **Tunnelling between dots** — decay constant β from the measured ligand-length dependence of mobility, compared with alkanethiol monolayers and a vacuum gap.
 - **Dark current** — ideal-diode diffusion (n = 1) and generation (n = 2) limits: effect of a smaller gap, halving interval on cooling, temperature projection of a measured InGaAs value.
 - **Detector metrics** — responsivity, shot-noise-limited specific detectivity D*, pixel-area ratios.
-- **Validation** — 101 automated checks plus unit tests, run in CI on every push.
+- **Validation** — 102 automated checks plus unit tests, run in CI on every push.
 
 ## Quick Start
 
@@ -52,7 +52,7 @@ print(sf.surface_fraction(d))                 # 0.269: 27 % of the atoms are at 
 
 ```bash
 pytest -q                               # unit tests + full validation suite
-python scripts/validate.py --markdown   # 101 checks → outputs/validation_table.json and VALIDATION.md
+python scripts/validate.py --markdown   # 102 checks → outputs/validation_table.json and VALIDATION.md
 ```
 
 `scripts/validate.py` exits with code 1 if any check fails. The full table is in [VALIDATION.md](VALIDATION.md).
@@ -71,7 +71,7 @@ Quantum-Dot-Photodetector/
 │   ├── detector.py       # responsivity, shot-noise D*, dark current from e⁻/s, pixel areas
 │   ├── summary.py        # every number in the report (compute)
 │   ├── slides.py         # where each number appears: slide, value shown, tolerance
-│   ├── validation.py     # 101 automated checks (run_all)
+│   ├── validation.py     # 102 automated checks (run_all)
 │   └── plotting.py       # figures (14 cm wide, 300 dpi)
 ├── scripts/              # command-line entry points
 ├── tests/                # pytest: unit tests and full validation
@@ -120,13 +120,13 @@ For large dots the count tends to $`f \to 6h\,\langle\max_i |n_i|\rangle/d`$ wit
 
 ### Tunnelling between dots
 
-Carrier mobility in a dot film falls exponentially with the ligand length, $\mu \propto \exp(-\beta d)$. A factor 2.6 per Å gives $\beta = \ln 2.6 = 0.96$ Å⁻¹. For a rectangular barrier
+Carrier mobility in a dot film falls exponentially with the ligand length, $\mu \propto \exp(-\beta d)$. Liu et al. [19] measured $\beta$ = 1.08–1.10 Å⁻¹ for PbSe dot films treated with alkanedithiols of different lengths; the midpoint, 1.09 Å⁻¹, means a factor of 3.0 per Å of ligand (see Correction). For a rectangular barrier
 
 ```math
 \beta = 2\kappa = \frac{2\sqrt{2m^*\varphi}}{\hbar}
 ```
 
-so the same β corresponds to φ = 0.87 eV with $`m^* = m_0`$ or 2.0 eV with $`m^* = 0.43\,m_0`$; β is compared directly with alkanethiol monolayers (0.79 Å⁻¹) and a 4.5 eV vacuum gap (2.17 Å⁻¹).
+so the same β corresponds to φ = 1.13 eV with $`m^* = m_0`$ or 2.65 eV with $`m^* = 0.43\,m_0`$; β is compared directly with alkanethiol monolayers (0.79 Å⁻¹) and a 4.5 eV vacuum gap (2.17 Å⁻¹).
 
 ![Tunnelling](docs/figures/f_tunnel.png)
 
@@ -159,7 +159,8 @@ R = \frac{\eta q\lambda}{hc},\qquad D^*_\mathrm{shot} = \frac{R}{\sqrt{2qJ_d}}
 | Moreels sizing curve coefficients | 0.0252, 0.283 | [7] |
 | PbS lattice constant $a$ | 0.5936 nm | [27] |
 | Sensor wavelengths | 940, 1400 nm | ST [12] |
-| Mobility factor per Å of ligand | 2.6 (PbSe, alkanedithiols) | [19, 20] |
+| Mobility decay constant β (PbSe, alkanedithiols) | 1.08–1.10 Å⁻¹ (midpoint 1.09 used) | [19] |
+| Mobility factor per Å used in the presentation | 2.6 (β = 0.96 Å⁻¹; corrected, see Correction) | [20] |
 | Alkanethiol SAM β, φ | 0.79 Å⁻¹, 1.39 eV | [21] |
 | Vacuum barrier | 4.5 eV | assumed (typical metal work function) |
 | Si, In₀.₅₃Ga₀.₄₇As gaps | 1.12, 0.75 eV | [22], [24] |
@@ -177,7 +178,7 @@ R = \frac{\eta q\lambda}{hc},\qquad D^*_\mathrm{shot} = \frac{R}{\sqrt{2qJ_d}}
 | Gap at d = 5.11 nm: EMA / hyperbolic / measured | 1.71 / 1.07 / 0.89 eV | 6 |
 | Confinement overestimate vs measured: EMA / hyperbolic | 2.7× / 1.4× | 6, 16 |
 | Atoms at the surface: 3.1 / 5.1 nm dot | 43 % / 27 % (shell model 48 % / 31 %) | 4 |
-| β of the QD film; SAM; vacuum gap | 0.96; 0.79; 2.17 Å⁻¹ | 8 |
+| β of the QD film; SAM; vacuum gap | 1.09 (presented: 0.96); 0.79; 2.17 Å⁻¹ | 8, 16 |
 | Ideal dark-current increase, 940 → 1400 nm dots | 1.9 × 10⁷ (n = 1), 4.4 × 10³ (n = 2) | 10 |
 | Halving interval near 300 K | 5.6 K (n = 1), 11.2 K (n = 2) | 10 |
 | Measured dark current, PbS CQD / InGaAs | 62× (gap alone would give 0.14×) | 10, 13, 16 |
@@ -188,6 +189,20 @@ R = \frac{\eta q\lambda}{hc},\qquad D^*_\mathrm{shot} = \frac{R}{\sqrt{2qJ_d}}
 - About a quarter of the atoms in a 5 nm dot are at the surface, which is why ligand passivation matters for traps and dark current.
 - The CQD photodiode has 62 times the dark current of the InGaAs FPA although its gap is wider; by the gap alone it should have 0.14 times. The excess comes from defects such as surface traps, not from the gap.
 
+## Correction
+
+The presentation (slides 8 and 16 and the spoken script) used a mobility gain of 2.6 per Å of shorter ligand, taken from the review [20]'s summary of [19], which gives $\beta = \ln 2.6 = 0.96$ Å⁻¹. The primary source [19] reports $\beta$ = 1.08–1.10 Å⁻¹ in its abstract, a gain of 2.9–3.0 per Å; the review's own wording could not be re-checked for this correction. The package now uses the midpoint of [19]:
+
+| Quantity | Presented | Corrected |
+|---|---|---|
+| β of the QD film (Å⁻¹) | 0.96 | 1.09 |
+| Mobility gain per Å of shorter ligand | 2.6× | 3.0× |
+| κ = β/2 (Å⁻¹) | 0.48 | 0.545 |
+| Barrier for $`m^* = m_0`$ (eV) | 0.87 | 1.13 |
+| Barrier for $`m^* = 0.43\,m_0`$ (eV) | 2.0 | 2.65 |
+
+The conclusions stand: the film's β lies between an alkanethiol monolayer (0.79 Å⁻¹) and a vacuum gap (2.17 Å⁻¹), and shortening the ligand raises the mobility steeply. `slides.py` keeps the values as presented, still checked against the input the presentation used, and marks each with its corrected value; [VALIDATION.md](VALIDATION.md) shows both.
+
 ## Validation
 
 | Category | Checks | Examples |
@@ -195,7 +210,7 @@ R = \frac{\eta q\lambda}{hc},\qquad D^*_\mathrm{shot} = \frac{R}{\sqrt{2qJ_d}}
 | Constants | 4 | ħ²/2m0, e²/4πε0, hc, k_B against CODATA 2018 (scipy) |
 | Quantum size | 15 | inversion round trip; EMA and Coulomb terms recomputed in SI; HBM → EMA small-k series; ordering and bulk limits |
 | Surface atoms | 13 | two independent counting algorithms agree exactly; lattice density; large-dot limit extrapolated to 0.831; shell model by hand |
-| Transport | 5 | β = ln 2.6; vacuum β recomputed in SI; (β, φ, m*) self-consistency |
+| Transport | 6 | β within the range of [19]; the presented ln 2.6; vacuum β recomputed in SI; (β, φ, m*) self-consistency |
 | Dark current | 9 | n = 2 ratio = √(n = 1 ratio); numerical vs analytic d lnJ/dT; exact halving brackets the local value; IMX990 between projections |
 | Detector | 4 | R = 1.00 A/W against the reported 1 A/W [23]; D* recomputed in SI; measured D* below the shot-noise limit |
 | Slide values | 51 | every computed number on slides 4, 6, 8–13 and 16 and in the script, within half a unit of the last digit shown |

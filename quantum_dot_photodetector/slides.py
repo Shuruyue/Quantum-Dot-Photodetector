@@ -5,6 +5,9 @@ Each entry gives the slide number (18-slide deck), the value as shown, the key i
 range for qualitative statements). ``slide_text`` is the exact string on the
 slide; ``script_text`` is the matching phrase of the spoken script, which was delivered in Chinese
 and is given here in English translation. Each number can be traced to where it is used.
+
+Entries with ``corrected`` show a value that was later corrected (README, Correction): they are checked against
+the input the presentation used, and ``corrected`` names the key of the corrected value.
 """
 from dataclasses import dataclass
 from typing import Optional, Tuple
@@ -21,6 +24,7 @@ class Shown:
     within: Optional[Tuple[float, float]] = None  # for qualitative statements
     slide_text: Optional[str] = None
     script_text: Optional[str] = None
+    corrected: Optional[str] = None          # key of the corrected value, for a number corrected after the talk
 
 
 REGISTRY = [
@@ -53,12 +57,15 @@ REGISTRY = [
     # ------------------------------------------------------------ slide 8: electrical properties
     Shown(8, "responsivity at η = 0.6, 1400 nm (A/W)", "R_st", 0.68, 0.005,
           slide_text="≈ 0.68 A/W at η = 0.6", script_text="about 0.68 A/W"),
-    Shown(8, "β of the QD film (Å⁻¹)", "beta_qd", 0.96, 0.005,
-          slide_text="β ≈ 0.96 Å⁻¹ [19, 20]", script_text="β is about 0.96 Å⁻¹"),
-    Shown(8, "κ of the QD film (Å⁻¹)", "kappa_qd", 0.48, 0.005, script_text="κ ≈ 0.48 Å⁻¹"),
-    Shown(8, "barrier of the QD film for m* = m0 (eV)", "barrier_qd_m0", 0.87, 0.005, script_text="φ is about 0.87 eV"),
+    Shown(8, "β of the QD film (Å⁻¹)", "beta_qd_presented", 0.96, 0.005,
+          slide_text="β ≈ 0.96 Å⁻¹ [19, 20]", script_text="β is about 0.96 Å⁻¹", corrected="beta_qd"),
+    Shown(8, "κ of the QD film (Å⁻¹)", "kappa_qd_presented", 0.48, 0.005, script_text="κ ≈ 0.48 Å⁻¹",
+          corrected="kappa_qd"),
+    Shown(8, "barrier of the QD film for m* = m0 (eV)", "barrier_qd_m0_presented", 0.87, 0.005,
+          script_text="φ is about 0.87 eV", corrected="barrier_qd_m0"),
     Shown(8, "m* implied by the SAM fit (m0)", "m_sam", 0.43, 0.005, script_text="m* ≈ 0.43 m0"),
-    Shown(8, "barrier of the QD film for m* = 0.43 m0 (eV)", "barrier_qd_msam", 2.0, 0.05, script_text="φ is about 2.0 eV"),
+    Shown(8, "barrier of the QD film for m* = 0.43 m0 (eV)", "barrier_qd_msam_presented", 2.0, 0.05,
+          script_text="φ is about 2.0 eV", corrected="barrier_qd_msam"),
     Shown(8, "rate factor per Å, alkane SAM", "factor_sam", 2.2, 0.05, slide_text="β = 0.79 Å⁻¹, ×2.2/Å"),
     Shown(8, "β of a 4.5 eV vacuum gap (Å⁻¹)", "beta_vac", 2.2, 0.05,
           slide_text="STM, β ≈ 2.2 Å⁻¹", script_text="β is about 2.2 Å⁻¹"),
@@ -102,7 +109,8 @@ REGISTRY = [
     # ------------------------------------------------------------ slide 16: conclusion
     Shown(16, "EMA confinement overestimate (×)", "over_ema", 2.7, 0.05,
           slide_text="overestimates the confinement ×2.7", script_text="overestimates by about 2.7 times"),
-    Shown(16, "β of the QD film (Å⁻¹)", "beta_qd", 0.96, 0.005, slide_text="0.96 Å⁻¹"),
+    Shown(16, "β of the QD film (Å⁻¹)", "beta_qd_presented", 0.96, 0.005, slide_text="0.96 Å⁻¹",
+          corrected="beta_qd"),
     Shown(16, "PbS CQD / InGaAs dark current (×)", "jd_ratio_meas", 62, 0.5, slide_text="62×"),
     Shown(16, "PbS CQD / InGaAs dark current, rounded (×)", "jd_ratio_meas", 60, 5,
           slide_text="dark current (≈ 60× InGaAs)"),

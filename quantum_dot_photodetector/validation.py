@@ -147,9 +147,12 @@ def _surface(r):
 # ---------------------------------------------------------------- transport
 def _transport(r):
     cat = "Transport"
+    lo, hi = D.BETA_QD
     out = [
-        _close(cat, "β = ln 2.6 → rate factor per Å", 1 / tr.relative_rate(r["beta_qd"], 1.0), D.MOBILITY_FACTOR_PER_A, 1e-12,
-               "exp(β·1 Å) returns 2.6"),
+        _flag(cat, "β of the QD film within the range of [19]", lo <= r["beta_qd"] <= hi,
+              f"{lo} ≤ {r['beta_qd']:.3f} ≤ {hi} Å⁻¹; rate factor {r['factor_qd']:.2f} per Å"),
+        _close(cat, "as presented: β = ln 2.6 → rate factor per Å", 1 / tr.relative_rate(r["beta_qd_presented"], 1.0),
+               D.MOBILITY_FACTOR_PER_A_PRESENTED, 1e-12, "exp(β·1 Å) returns 2.6; corrected to [19], see README"),
     ]
     beta_si = 2 * math.sqrt(2 * sc.m_e * D.PHI_VAC * sc.e) / sc.hbar * 1e-10
     out.append(_close(cat, "vacuum 4.5 eV: β = 2(2m0φ)^½/ħ, recomputed in SI (Å⁻¹)", r["beta_vac"], beta_si, 1e-6,
@@ -223,6 +226,8 @@ def _slides(r):
         model, ok = slides.check(e, r)
         where = " / ".join(x for x in (e.slide_text and f"slide: “{e.slide_text}”",
                                         e.script_text and f"script: “{e.script_text}”") if x)
+        if e.corrected:
+            where += f"; corrected after the talk to {r[e.corrected] * e.scale:.3g} (README, Correction)"
         if e.within is not None:
             how = f"range {e.within[0]:g}–{e.within[1]:g}; {where}"
             out.append(Check(f"Slide {e.slide}", e.quantity, ok, model, None, None, how))

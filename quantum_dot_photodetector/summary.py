@@ -40,11 +40,18 @@ def compute():
         r["shell_" + key] = sf.shell_fraction(dd)
         r["N_" + key] = sf.count_sites(dd, "atom")[0]
     # ---------------------------------------------------------------- transport
-    r["beta_qd"] = tr.beta_from_factor()
+    r["beta_qd_low"], r["beta_qd_high"] = D.BETA_QD
+    r["beta_qd"] = sum(D.BETA_QD) / 2                     # midpoint of the range reported by [19]
+    r["factor_qd"] = 1 / tr.relative_rate(r["beta_qd"], 1.0)
     r["kappa_qd"] = r["beta_qd"] / 2
     r["barrier_qd_m0"] = tr.barrier_from_beta(r["beta_qd"], 1.0)
     r["m_sam"] = tr.mass_from_beta_and_barrier(D.BETA_SAM, D.PHI_SAM)
     r["barrier_qd_msam"] = tr.barrier_from_beta(r["beta_qd"], r["m_sam"])
+    # as presented (factor 2.6 per Å); kept to check the slides and the script, see README, Correction
+    r["beta_qd_presented"] = tr.beta_from_factor(D.MOBILITY_FACTOR_PER_A_PRESENTED)
+    r["kappa_qd_presented"] = r["beta_qd_presented"] / 2
+    r["barrier_qd_m0_presented"] = tr.barrier_from_beta(r["beta_qd_presented"], 1.0)
+    r["barrier_qd_msam_presented"] = tr.barrier_from_beta(r["beta_qd_presented"], r["m_sam"])
     r["beta_vac"] = tr.beta_from_barrier(D.PHI_VAC)
     r["factor_vac"] = 1 / tr.relative_rate(r["beta_vac"], 1.0)
     r["factor_sam"] = 1 / tr.relative_rate(D.BETA_SAM, 1.0)
