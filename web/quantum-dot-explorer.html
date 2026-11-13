@@ -1,0 +1,622 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Quantum Dot Explorer</title>
+<meta name="description" content="Interactive sizing of PbS colloidal quantum dots for short-wave infrared detectors: the dot diameter for a wavelength, three band-gap models, surface atoms, the dark-current cost of a smaller gap, and tunnelling between dots.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=Noto+Sans+TC:wght@400;500;700&display=swap">
+<style>
+/* House style shared by the interactive pages (taken from the Ethanol-Water-VLE page of the same author). */
+:root {
+  --page: #f2f2ee; --surface: #fcfcfb; --surface-2: #f6f6f2; --ink: #141412; --ink-2: #52514e; --muted: #7d7b75;
+  --grid: #e5e4de; --axis: #c3c2b7; --line: rgba(11,11,11,.11);
+  --accent: #2a78d6; --accent-ink: #1c5cab; --accent-soft: #e3eefb;
+  --s1: #2a78d6; --s2: #eb6834; --s3: #1baf7a; --ideal: #8a8880; --exp: #141412;
+  --q1: #86b6ef; --q2: #3987e5; --q3: #1c5cab; --q4: #0d366b;
+  --warn-bg: #fff3d6; --warn-ink: #6b4300; --warn-mark: #fab219; --good: #006300; --crit: #d03b3b;
+  --font-ui: "IBM Plex Sans", "Noto Sans TC", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-num: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --r: 10px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --page: #0f0f0e; --surface: #1a1a19; --surface-2: #222220; --ink: #f0efec; --ink-2: #c3c2b7; --muted: #8f8d86;
+    --grid: #2c2c2a; --axis: #45443f; --line: rgba(255,255,255,.10);
+    --accent: #3987e5; --accent-ink: #86b6ef; --accent-soft: #16273d;
+    --s1: #3987e5; --s2: #d95926; --s3: #199e70; --ideal: #8f8d86; --exp: #f0efec;
+    --q1: #256abf; --q2: #3987e5; --q3: #6da7ec; --q4: #b7d3f6;
+    --warn-bg: #33270c; --warn-ink: #f5cf7a; --warn-mark: #fab219; --good: #0ca30c; --crit: #e66767;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --page: #0f0f0e; --surface: #1a1a19; --surface-2: #222220; --ink: #f0efec; --ink-2: #c3c2b7; --muted: #8f8d86;
+  --grid: #2c2c2a; --axis: #45443f; --line: rgba(255,255,255,.10);
+  --accent: #3987e5; --accent-ink: #86b6ef; --accent-soft: #16273d;
+  --s1: #3987e5; --s2: #d95926; --s3: #199e70; --ideal: #8f8d86; --exp: #f0efec;
+  --q1: #256abf; --q2: #3987e5; --q3: #6da7ec; --q4: #b7d3f6;
+  --warn-bg: #33270c; --warn-ink: #f5cf7a; --warn-mark: #fab219; --good: #0ca30c; --crit: #e66767;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body { background: var(--page); color: var(--ink); font-family: var(--font-ui); font-size: 14px; line-height: 1.5; }
+.app { max-width: 1320px; margin: 0 auto; padding-block: 20px 40px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+h1, h2, h3 { text-wrap: balance; margin: 0; }
+sub, sup { font-size: 72%; line-height: 0; }
+.num { font-family: var(--font-num); font-variant-numeric: tabular-nums; }
+
+/* header */
+.head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 8px 24px; margin-bottom: 14px; }
+.head h1 { font-size: 1.55rem; font-weight: 600; letter-spacing: -0.01em; }
+.head h1 .en { display: block; font-size: .8rem; font-weight: 500; color: var(--muted); letter-spacing: .03em; margin-bottom: 2px; }
+.head .sys { color: var(--ink-2); font-size: .86rem; max-width: 62ch; }
+.head .sys b { font-weight: 600; color: var(--ink); }
+
+/* readouts */
+.readouts { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 10px; margin-bottom: 16px; }
+.ro { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 10px 12px 11px; min-width: 0; }
+.ro .k { font-size: .76rem; color: var(--muted); letter-spacing: .02em; }
+.ro .v { font-family: var(--font-num); font-variant-numeric: tabular-nums; font-size: 1.22rem; font-weight: 500; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ro .v small { font-size: .74rem; color: var(--ink-2); font-weight: 400; }
+.ro .s { font-size: .78rem; color: var(--ink-2); margin-top: 2px; }
+.pill { display: inline-flex; align-items: center; gap: 5px; font-size: .74rem; padding: 1px 8px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface-2); color: var(--ink-2); white-space: nowrap; }
+.pill::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--muted); }
+.pill.good::before { background: var(--good); }
+.pill.bad::before { background: var(--crit); }
+.pill.warn::before { background: var(--warn-mark); }
+
+.alert { display: flex; gap: 10px; align-items: flex-start; background: var(--warn-bg); color: var(--warn-ink); border-radius: var(--r); padding: 9px 12px; margin-bottom: 14px; font-size: .86rem; }
+.alert::before { content: "!"; flex: none; width: 18px; height: 18px; border-radius: 50%; background: var(--warn-mark); color: #3a2600; font-weight: 700; font-size: 12px; display: grid; place-items: center; margin-top: 1px; }
+
+/* main layout */
+.layout { display: grid; grid-template-columns: 296px minmax(0, 1fr); gap: 18px; align-items: start; }
+@media (max-width: 920px) { .layout { grid-template-columns: minmax(0, 1fr); } }
+
+/* control rail */
+.rail { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 14px 14px 16px; display: grid; gap: 16px;
+  position: sticky; top: calc(env(safe-area-inset-top, 0px) + 12px); max-height: calc(100vh - 24px); overflow-y: auto; }
+@media (max-width: 920px) { .rail { position: static; max-height: none; } }
+.grp { display: grid; gap: 10px; }
+.grp > h2 { font-size: .78rem; font-weight: 600; color: var(--muted); letter-spacing: .04em; }
+.presets { display: grid; gap: 6px; }
+.preset { text-align: left; font: inherit; font-size: .84rem; color: var(--ink); background: var(--surface-2); border: 1px solid var(--line); border-radius: 8px; padding: 7px 10px; cursor: pointer; display: grid; gap: 1px; }
+.preset small { color: var(--muted); font-size: .74rem; }
+.preset:hover { border-color: var(--accent); }
+.preset[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-soft); box-shadow: inset 3px 0 0 var(--accent); }
+.seg { display: grid; grid-template-columns: 1fr 1fr; background: var(--surface-2); border: 1px solid var(--line); border-radius: 8px; padding: 3px; gap: 3px; }
+.seg button { font: inherit; font-size: .78rem; border: 0; background: transparent; color: var(--ink-2); padding: 5px 6px; border-radius: 6px; cursor: pointer; line-height: 1.25; }
+.seg button[aria-pressed="true"] { background: var(--surface); color: var(--ink); box-shadow: 0 0 0 1px var(--line); font-weight: 500; }
+.ctl { display: grid; gap: 3px; }
+.ctl .row { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
+.ctl label { font-size: .86rem; }
+.ctl label .u { color: var(--muted); font-size: .76rem; margin-left: 4px; }
+.ctl input[type=number] { width: 106px; font-family: var(--font-num); font-variant-numeric: tabular-nums; font-size: .84rem; text-align: right; color: var(--ink);
+  background: var(--surface-2); border: 1px solid var(--line); border-radius: 6px; padding: 2px 6px; }
+.ctl input[type=range] { width: 100%; accent-color: var(--accent); margin: 2px 0 0; }
+.chips { display: flex; flex-wrap: wrap; gap: 5px; }
+.chip { font: inherit; font-size: .74rem; border: 1px solid var(--line); background: var(--surface-2); color: var(--ink-2); border-radius: 999px; padding: 1px 9px; cursor: pointer; }
+.chip:hover { border-color: var(--accent); color: var(--ink); }
+.derived { display: grid; grid-template-columns: auto 1fr auto 1fr; gap: 3px 10px; font-size: .8rem; color: var(--ink-2); background: var(--surface-2); border-radius: 8px; padding: 8px 10px; }
+.derived .num { color: var(--ink); text-align: right; }
+.checks { display: grid; gap: 6px; font-size: .86rem; }
+.checks label { display: flex; align-items: center; gap: 8px; cursor: pointer; }
+.checks input { accent-color: var(--accent); width: 15px; height: 15px; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* tabs */
+.tabs { display: flex; gap: 2px; border-bottom: 1px solid var(--line); margin-bottom: 14px; overflow-x: auto; }
+.tab { font: inherit; font-size: .9rem; background: none; border: 0; border-bottom: 2px solid transparent; color: var(--ink-2); padding: 8px 12px 9px; cursor: pointer; white-space: nowrap; margin-bottom: -1px; }
+.tab[aria-selected="true"] { color: var(--ink); border-bottom-color: var(--accent); font-weight: 500; }
+.panel { display: grid; gap: 14px; }
+.grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 14px; }
+.grid3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; }
+
+/* chart cards */
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 12px 12px 8px; min-width: 0; }
+.card > h3 { font-size: .92rem; font-weight: 600; }
+.card > .sub { font-size: .78rem; color: var(--muted); margin-top: 1px; }
+.chart { margin-top: 6px; }
+.legend { display: flex; flex-wrap: wrap; gap: 3px 14px; font-size: .78rem; color: var(--ink-2); margin-bottom: 4px; }
+.legend > span { display: inline-flex; align-items: center; gap: 6px; }
+.legend svg { flex: none; }
+.plotbox { position: relative; width: 100%; outline: none; }
+.plotbox:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 6px; }
+.plotbox svg { display: block; touch-action: pan-y; }
+.plotbox text { font-family: var(--font-num); font-size: 10.5px; fill: var(--muted); }
+.plotbox text.lab { font-family: var(--font-ui); font-size: 11.5px; fill: var(--ink-2); }
+.plotbox text.ann { font-family: var(--font-ui); font-size: 11px; fill: var(--ink-2); }
+.tip { position: absolute; z-index: 3; pointer-events: none; background: var(--surface); border: 1px solid var(--line); box-shadow: 0 6px 18px rgba(0,0,0,.12);
+  border-radius: 8px; padding: 6px 9px 7px; font-size: .78rem; min-width: 150px; max-width: 250px; }
+.tip .t { color: var(--muted); font-family: var(--font-num); font-size: .74rem; margin-bottom: 3px; }
+.tip .r { display: grid; grid-template-columns: 16px auto 1fr; align-items: center; gap: 6px; line-height: 1.35; }
+.tip .r b { font-family: var(--font-num); font-variant-numeric: tabular-nums; font-weight: 500; color: var(--ink); }
+.tip .r i { font-style: normal; color: var(--ink-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.note { font-size: .82rem; color: var(--ink-2); background: var(--surface-2); border-radius: 8px; padding: 8px 10px; }
+.answer { background: var(--surface); border: 1px solid var(--line); border-left: 3px solid var(--accent); border-radius: var(--r); padding: 10px 14px; font-size: .9rem; max-width: 100%; }
+.answer p { margin: 0; max-width: 78ch; }
+.answer p + p { margin-top: 6px; }
+
+table { border-collapse: collapse; width: 100%; font-size: .84rem; }
+th, td { padding: 5px 10px; text-align: right; border-bottom: 1px solid var(--line); white-space: nowrap; }
+th:first-child, td:first-child { text-align: left; }
+th { font-weight: 500; color: var(--muted); font-size: .76rem; }
+td { font-family: var(--font-num); font-variant-numeric: tabular-nums; }
+td.txt { font-family: var(--font-ui); }
+.tablewrap { overflow-x: auto; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 4px 4px 2px; }
+.btn { font: inherit; font-size: .86rem; border: 1px solid var(--accent); color: var(--accent-ink); background: var(--accent-soft); border-radius: 8px; padding: 6px 12px; cursor: pointer; }
+.btn:hover { background: var(--surface); }
+.toolbar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.toolbar .msg { font-size: .8rem; color: var(--muted); }
+textarea.copybox { width: 100%; height: 140px; font-family: var(--font-num); font-size: .74rem; background: var(--surface-2); color: var(--ink); border: 1px solid var(--line); border-radius: 8px; padding: 8px; }
+.src { font-size: .8rem; color: var(--ink-2); display: grid; gap: 4px; }
+.src p { margin: 0; max-width: 100ch; }
+.foot { margin-top: 22px; font-size: .76rem; color: var(--muted); max-width: 100ch; }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+
+/* ---------------------------------------------------------------- page-specific */
+body { margin: 0; }
+a { color: var(--accent-ink); }
+.head .links { font-size: .82rem; color: var(--ink-2); display: flex; gap: 14px; flex-wrap: wrap; }
+.ro .v .x { font-size: .8rem; color: var(--ink-2); margin-left: 6px; }
+.formula { font-family: var(--font-num); font-size: .84rem; background: var(--surface-2); border-radius: 8px; padding: 8px 10px; margin: 4px 0; overflow-x: auto; white-space: nowrap; }
+.src ul { margin: 0; padding-left: 18px; }
+.src li { margin: 2px 0; }
+</style>
+
+<div class="app">
+  <header class="head">
+    <h1><span class="en">Quantum-Dot-Photodetector · PbS colloidal quantum dots · short-wave infrared</span>How small must a PbS dot be to see a given wavelength?</h1>
+    <p class="sys">Choose the wavelength a detector should absorb. The dot diameter follows from the <b>measured sizing curve</b>; the page then shows what the textbook models predict for that dot, how many of its atoms sit at the surface, what the smaller gap costs in dark current, and how the ligand length sets the current between dots. Everything is computed in the browser.</p>
+    <p class="links"><a href="https://github.com/Shuruyue/Quantum-Dot-Photodetector">Repository</a><a href="https://github.com/Shuruyue/Quantum-Dot-Photodetector/blob/main/VALIDATION.md">Validation table</a></p>
+  </header>
+
+  <section class="readouts" aria-label="Results" id="readouts"></section>
+  <div class="alert" id="alert" hidden></div>
+
+  <div class="layout">
+    <aside class="rail" aria-label="Parameters">
+      <div class="grp">
+        <h2>Detector</h2>
+        <div class="presets" id="presets"></div>
+      </div>
+      <div class="grp" id="lamGrp"><h2>Wavelength to absorb</h2></div>
+      <div class="grp" id="darkGrp"><h2>Dark current, ideal diode</h2></div>
+      <div class="grp" id="tunGrp"><h2>Between the dots</h2></div>
+    </aside>
+
+    <main>
+      <div class="tabs" role="tablist" aria-label="Views">
+        <button class="tab" role="tab" id="t-size" aria-controls="p-size" aria-selected="true">Size and gap</button>
+        <button class="tab" role="tab" id="t-dark" aria-controls="p-dark" aria-selected="false">Dark current</button>
+        <button class="tab" role="tab" id="t-tunnel" aria-controls="p-tunnel" aria-selected="false">Tunnelling</button>
+        <button class="tab" role="tab" id="t-method" aria-controls="p-method" aria-selected="false">Method and checks</button>
+      </div>
+
+      <section class="panel" id="p-size" role="tabpanel" aria-labelledby="t-size">
+        <div class="answer" id="answer"></div>
+        <div class="grid2">
+          <div class="card"><h3>Band gap against dot diameter</h3><div class="sub">Three models of the same dot; the dashed line is the gap the wavelength asks for</div><div class="chart" id="cGap"></div></div>
+          <div class="card"><h3>Atoms at the surface</h3><div class="sub">Counted on the rock-salt lattice, and a continuum shell one Pb–S distance thick</div><div class="chart" id="cSurf"></div></div>
+        </div>
+      </section>
+
+      <section class="panel" id="p-dark" role="tabpanel" aria-labelledby="t-dark" hidden>
+        <div class="card"><h3>Ideal dark current against the wavelength the dots absorb</h3><div class="sub" id="darkSub"></div><div class="chart" id="cDark"></div></div>
+        <div class="note" id="darkNote"></div>
+      </section>
+
+      <section class="panel" id="p-tunnel" role="tabpanel" aria-labelledby="t-tunnel" hidden>
+        <div class="card"><h3>Current between dots against the extra gap</h3><div class="sub">Relative rate exp(−β Δd): mobility in a dot film, an alkanethiol monolayer and an STM vacuum gap</div><div class="chart" id="cTun"></div></div>
+        <div class="note" id="tunNote"></div>
+      </section>
+
+      <section class="panel" id="p-method" role="tabpanel" aria-labelledby="t-method" hidden>
+        <div class="card src">
+          <h3>Dot size and band gap</h3>
+          <div class="formula">measured sizing curve [7]: E<sub>0</sub>(d) = 0.41 + 1 / (0.0252 d² + 0.283 d) &nbsp;(d in nm, E in eV); the diameter for a wavelength solves E<sub>0</sub>(d) = hc/λ</div>
+          <div class="formula">effective-mass approximation [5]: E = E<sub>g</sub> + ħ²π²/(2R²) (1/m<sub>e</sub>* + 1/m<sub>h</sub>*) − 1.786 e²/(4πε<sub>0</sub>ε<sub>∞</sub>R)</div>
+          <div class="formula">hyperbolic bands [18]: E = [E<sub>g</sub>² + 2E<sub>g</sub>ħ²/m* (π/R)²]<sup>½</sup> − 1.786 e²/(4πε<sub>0</sub>ε<sub>∞</sub>R)</div>
+          <p>PbS: E<sub>g</sub> = 0.41 eV at 300 K [6, 7], m<sub>e</sub>* = m<sub>h</sub>* = 0.085 m<sub>0</sub> [18], ε<sub>∞</sub> = 17.2. Both models assume isotropic masses and infinite walls; PbS has an anisotropic, fourfold-degenerate L-point band edge and finite ligand barriers, so neither is used for sizing.</p>
+        </div>
+        <div class="card src">
+          <h3>Surface atoms</h3>
+          <p>Rock salt puts Pb and S on a simple-cubic lattice of spacing h = a/2 (a = 0.5936 nm [27]); every atom has six nearest neighbours. All lattice sites within d/2 of the centre are counted, and an atom is at the surface when fewer than six of its neighbours are inside. The count depends on where the centre sits, so it is averaged over a sphere centred on an atom and one centred in a cube of atoms. Shell model: f = 1 − (1 − a/d)³. The count is purely geometric: no facets, reconstruction or ligand coverage.</p>
+        </div>
+        <div class="card src">
+          <h3>Dark current and tunnelling</h3>
+          <div class="formula">ideal diode, gap constant in T [22]: J<sub>diff</sub> ∝ T³ e<sup>−E<sub>g</sub>/kT</sup> (n = 1), &nbsp;J<sub>gen</sub> ∝ T<sup>1.5</sup> e<sup>−E<sub>g</sub>/2kT</sup> (n = 2); ratio of two dots = e<sup>ΔE<sub>g</sub>/nkT</sup>; halving step = ln 2 / (d ln J/dT)</div>
+          <div class="formula">tunnelling: rate ∝ e<sup>−β d</sup>, &nbsp;β = 2κ = 2(2m*φ)<sup>½</sup>/ħ for a rectangular barrier</div>
+          <p>β of the dot film is the range measured by Liu et al. [19] for PbSe dots with alkanedithiols of different lengths, 1.08–1.10 Å⁻¹ (the midpoint is used); the alkanethiol monolayer has β = 0.79 Å⁻¹ with φ = 1.39 eV [21]; the vacuum gap assumes a 4.5 eV work function. The presentation this repository supports used 0.96 Å⁻¹ (a factor 2.6 per Å, from a review); see the README, Correction. Hopping mobility also contains thermal activation, so β is an effective value.</p>
+        </div>
+        <div class="card src">
+          <h3>Checks</h3>
+          <p id="checkText"></p>
+        </div>
+        <div class="card src">
+          <h3>Sources</h3>
+          <ul>
+            <li>[5] L. E. Brus, <i>J. Chem. Phys.</i> 80, 4403 (1984).</li>
+            <li>[6] F. W. Wise, <i>Acc. Chem. Res.</i> 33, 773 (2000).</li>
+            <li>[7] I. Moreels et al., <i>ACS Nano</i> 3, 3023 (2009).</li>
+            <li>[18] Y. Wang, A. Suna, W. Mahler, R. Kasowski, <i>J. Chem. Phys.</i> 87, 7315 (1987).</li>
+            <li>[19] Y. Liu et al., <i>Nano Lett.</i> 10, 1960 (2010).</li>
+            <li>[21] W. Wang, T. Lee, M. A. Reed, <i>Phys. Rev. B</i> 68, 035416 (2003).</li>
+            <li>[22] S. M. Sze, K. K. Ng, <i>Physics of Semiconductor Devices</i>, 3rd ed. (2007).</li>
+            <li>[23] M. Vafaie et al., <i>Matter</i> 4, 1042 (2021): PbS CQD photodiode. [24] J.-X. Zhang et al., <i>Front. Phys.</i> 9, 678192 (2021): InGaAs focal-plane array.</li>
+            <li>[27] <i>Handbook of Mineralogy</i>: galena.</li>
+          </ul>
+        </div>
+      </section>
+    </main>
+  </div>
+  <p class="foot">Code: <a href="https://github.com/Shuruyue/Quantum-Dot-Photodetector">github.com/Shuruyue/Quantum-Dot-Photodetector</a>. The physics block of this page is checked against the Python package by <code>scripts/verify_web_page.py</code>. Style shared with the <a href="https://shuruyue.github.io/Ethanol-Water-VLE/web/ethanol-water-vle.html">ethanol–water page</a>.</p>
+</div>
+
+<script>
+"use strict";
+window.addEventListener("error", (e) => { const a = document.getElementById("alert"); a.hidden = false; a.textContent = "This page hit an error: " + e.message; });
+// Tiny SVG chart engine shared by the interactive pages (taken from the Ethanol-Water-VLE page of the same author).
+function interp(q, xs, ys) {
+  if (q <= xs[0]) return ys[0]; const n = xs.length; if (q >= xs[n - 1]) return ys[n - 1];
+  let lo = 0, hi = n - 1; while (hi - lo > 1) { const m = (lo + hi) >> 1; if (xs[m] <= q) lo = m; else hi = m; }
+  return ys[lo] + (q - xs[lo]) / (xs[hi] - xs[lo]) * (ys[hi] - ys[lo]);
+}
+const NS = "http://www.w3.org/2000/svg";
+function mk(tag, at, parent) { const e = document.createElementNS(NS, tag); if (at) for (const k in at) e.setAttribute(k, at[k]); if (parent) parent.appendChild(e); return e; }
+function parts(str) { const out = []; const re = /([_^])\{([^}]*)\}/g; let last = 0, m; while ((m = re.exec(str))) { if (m.index > last) out.push([str.slice(last, m.index), ""]); out.push([m[2], m[1]]); last = re.lastIndex; } if (last < str.length) out.push([str.slice(last), ""]); return out; }
+function richSVG(str, el) { let sh = 0; for (const [t, k] of parts(str)) { const s = mk("tspan", null, el); const tgt = k === "_" ? 3 : k === "^" ? -4 : 0; if (tgt - sh) s.setAttribute("dy", tgt - sh); sh = tgt; if (k) s.setAttribute("font-size", "8.5"); s.textContent = t; } }
+function richHTML(str, el) { for (const [t, k] of parts(str)) { if (!k) el.appendChild(document.createTextNode(t)); else { const n = document.createElement(k === "_" ? "sub" : "sup"); n.textContent = t; el.appendChild(n); } } }
+function nice(min, max, n) {
+  const span = max - min; if (!(span > 0)) return [min];
+  const raw = span / Math.max(1, n), mag = Math.pow(10, Math.floor(Math.log10(raw))), f = raw / mag;
+  const step = (f < 1.5 ? 1 : f < 3 ? 2 : f < 7 ? 5 : 10) * mag;
+  const out = []; for (let v = Math.ceil(min / step - 1e-9) * step; v <= max + step * 1e-9; v += step) out.push(+v.toFixed(12));
+  return out;
+}
+function logTicks(min, max) { const o = []; for (let e = Math.floor(Math.log10(min)); e <= Math.ceil(Math.log10(max)); e++) for (const m of [1, 2, 5]) { const v = m * 10 ** e; if (v >= min * 0.999 && v <= max * 1.001) o.push(v); } return o; }
+const fmtTick = (v) => { const a = Math.abs(v); if (a === 0) return "0"; if (a >= 1000) return v.toFixed(0); if (a >= 10) return +v.toFixed(1) + ""; if (a >= 1) return +v.toFixed(2) + ""; return +v.toFixed(3) + ""; };
+function lineDash(d) { return d === "dash" ? "6 4" : d === "dot" ? "1.5 3" : d === "dashdot" ? "7 3 1.5 3" : ""; }
+function keySVG(it) {
+  const s = mk("svg", { width: 22, height: 10, viewBox: "0 0 22 10", "aria-hidden": "true" });
+  if (it.kind === "line" || !it.kind) { const l = mk("line", { x1: 1, x2: 21, y1: 5, y2: 5 }, s); l.style.stroke = it.color; l.style.strokeWidth = it.width || 2; if (it.dash) l.setAttribute("stroke-dasharray", lineDash(it.dash)); l.setAttribute("stroke-linecap", "round"); }
+  else marker(s, it.kind, 11, 5, it.color, it.hollow, 3.6);
+  return s;
+}
+function marker(g, kind, x, y, color, hollow, r = 4) {
+  let e;
+  if (kind === "tri") e = mk("path", { d: `M${x},${y - r * 1.15}L${x + r},${y + r * 0.75}L${x - r},${y + r * 0.75}Z` }, g);
+  else if (kind === "diamond") e = mk("path", { d: `M${x},${y - r * 1.25}L${x + r * 1.05},${y}L${x},${y + r * 1.25}L${x - r * 1.05},${y}Z` }, g);
+  else if (kind === "square") e = mk("rect", { x: x - r * 0.9, y: y - r * 0.9, width: r * 1.8, height: r * 1.8 }, g);
+  else e = mk("circle", { cx: x, cy: y, r }, g);
+  if (hollow) { e.style.fill = "var(--surface)"; e.style.stroke = color; e.style.strokeWidth = 1.5; }
+  else { e.style.fill = color; e.style.stroke = "var(--surface)"; e.style.strokeWidth = 1.5; }
+  return e;
+}
+let chartSeq = 0;
+class Chart {
+  constructor(host, opt = {}) {
+    this.opt = Object.assign({ height: 300, square: false, maxH: 400, m: { l: 50, r: 12, t: 10, b: 40 } }, opt);
+    this.id = "c" + ++chartSeq;
+    this.leg = document.createElement("div"); this.leg.className = "legend"; host.appendChild(this.leg);
+    this.box = document.createElement("div"); this.box.className = "plotbox"; this.box.tabIndex = 0; host.appendChild(this.box);
+    this.svg = mk("svg", { role: "img" }, this.box);
+    this.tip = document.createElement("div"); this.tip.className = "tip"; this.tip.hidden = true; this.box.appendChild(this.tip);
+    this.spec = null; this.hx = null; this.W = 0;
+    new ResizeObserver(() => { const w = this.box.clientWidth; if (this.spec && w && Math.abs(w - this.W) > 0.5) this.draw(); }).observe(this.box);
+    const move = (ev) => { if (!this.sx) return; const r = this.svg.getBoundingClientRect(); this.hover(ev.clientX - r.left, ev.clientY - r.top); };
+    this.svg.addEventListener("pointermove", move);
+    this.svg.addEventListener("pointerdown", move);
+    this.svg.addEventListener("pointerleave", () => this.clear());
+    this.svg.addEventListener("click", (ev) => {
+      if (!this.sx || !this.spec) return; const r = this.svg.getBoundingClientRect(), px = ev.clientX - r.left, py = ev.clientY - r.top;
+      let best = null, bd = 12;
+      for (const se of this.spec.series) if (se.onPick) for (const p of se.pts) { if (!isFinite(p[0]) || !isFinite(p[1])) continue; const d = Math.hypot(this.sx(p[0]) - px, this.sy(p[1]) - py); if (d < bd) { bd = d; best = [se, p]; } }
+      if (best) best[0].onPick(best[1]);
+    });
+    this.box.addEventListener("focus", () => { if (!this.sx) return; this.kx = this.kx ?? (this.spec.x.min + this.spec.x.max) / 2; this.hover(this.sx(this.kx), null, true); });
+    this.box.addEventListener("blur", () => this.clear());
+    this.box.addEventListener("keydown", (e) => {
+      if (!this.sx) return; const sp = this.spec.x, st = (sp.max - sp.min) / 100;
+      if (e.key === "ArrowRight" || e.key === "ArrowLeft") { e.preventDefault(); this.kx = Math.min(sp.max, Math.max(sp.min, (this.kx ?? (sp.min + sp.max) / 2) + (e.key === "ArrowRight" ? st : -st))); this.hover(this.sx(this.kx), null, true); }
+      if (e.key === "Escape") this.clear();
+    });
+  }
+  set(spec) { this.spec = spec; this.svg.setAttribute("aria-label", spec.aria || ""); this.legend(); this.draw(); if (this.last) this.hover(...this.last); }
+  legend() {
+    this.leg.textContent = "";
+    for (const it of this.spec.series.filter((s) => s.name && !s.noLegend).concat(this.spec.marks?.filter((m) => m.legend) || [])) {
+      const sp = document.createElement("span"); sp.appendChild(keySVG({ kind: it.legendKind || it.kind === "points" && (it.shape || "circle") || it.kind === "point" && it.shape || "line", color: it.color, dash: it.dash, hollow: it.hollow, width: it.width }));
+      const t = document.createElement("span"); richHTML(it.legend || it.name, t); sp.appendChild(t); this.leg.appendChild(sp);
+    }
+  }
+  draw() {
+    const s = this.spec, o = this.opt, m = o.m;
+    const W = Math.max(240, this.box.clientWidth); this.W = this.box.clientWidth;
+    const H = o.square ? Math.min(o.maxH, Math.round(W * 0.92)) : o.height;
+    const svg = this.svg; svg.textContent = ""; svg.setAttribute("viewBox", `0 0 ${W} ${H}`); svg.setAttribute("width", W); svg.setAttribute("height", H);
+    const x0 = m.l, x1 = W - m.r, y0 = H - m.b, y1 = m.t;
+    const lx = (v) => Math.log10(v);
+    const sx = s.x.log ? (v) => x0 + (lx(v) - lx(s.x.min)) / (lx(s.x.max) - lx(s.x.min)) * (x1 - x0)
+                       : (v) => x0 + (v - s.x.min) / (s.x.max - s.x.min) * (x1 - x0);
+    const sy = s.y.log ? (v) => y0 - (Math.log10(v) - Math.log10(s.y.min)) / (Math.log10(s.y.max) - Math.log10(s.y.min)) * (y0 - y1)
+                       : (v) => y0 - (v - s.y.min) / (s.y.max - s.y.min) * (y0 - y1);
+    this.sx = sx; this.sy = sy; this.box_ = { x0, x1, y0, y1, W, H };
+    this.ix = s.x.log ? (px) => Math.pow(10, lx(s.x.min) + (px - x0) / (x1 - x0) * (lx(s.x.max) - lx(s.x.min)))
+                      : (px) => s.x.min + (px - x0) / (x1 - x0) * (s.x.max - s.x.min);
+    const defs = mk("defs", null, svg); const cp = mk("clipPath", { id: this.id + "clip" }, defs); mk("rect", { x: x0, y: y1, width: x1 - x0, height: y0 - y1 }, cp);
+    const bg = mk("rect", { x: x0, y: y1, width: x1 - x0, height: y0 - y1 }, svg); bg.style.fill = "var(--surface)";
+    // grid & ticks
+    const gx = mk("g", null, svg), gy = mk("g", null, svg);
+    const xt = s.x.ticks || (s.x.log ? logTicks(s.x.min, s.x.max) : nice(s.x.min, s.x.max, Math.max(3, Math.floor((x1 - x0) / 70))));
+    const yt = s.y.ticks || (s.y.log ? logTicks(s.y.min, s.y.max) : nice(s.y.min, s.y.max, Math.max(3, Math.floor((y0 - y1) / 42))));
+    for (const v of xt) { const X = sx(v); const l = mk("line", { x1: X, x2: X, y1: y1, y2: y0 }, gx); l.style.stroke = "var(--grid)"; l.style.strokeWidth = 1; const t = mk("text", { x: X, y: y0 + 15, "text-anchor": "middle" }, gx); t.textContent = (s.x.fmt || fmtTick)(v); }
+    for (const v of yt) { const Y = sy(v); const l = mk("line", { x1: x0, x2: x1, y1: Y, y2: Y }, gy); l.style.stroke = "var(--grid)"; l.style.strokeWidth = 1; const t = mk("text", { x: x0 - 6, y: Y + 3.5, "text-anchor": "end" }, gy); t.textContent = (s.y.fmt || fmtTick)(v); }
+    const ax = mk("path", { d: `M${x0},${y1}V${y0}H${x1}` }, svg); ax.style.stroke = "var(--axis)"; ax.style.fill = "none";
+    if (!s.y.log && s.y.min < 0 && s.y.max > 0) { const z = mk("line", { x1: x0, x2: x1, y1: sy(0), y2: sy(0) }, svg); z.style.stroke = "var(--axis)"; z.style.strokeWidth = 1; }
+    const xl = mk("text", { class: "lab", x: (x0 + x1) / 2, y: H - 6, "text-anchor": "middle" }, svg); richSVG(s.x.label, xl);
+    const yl = mk("text", { class: "lab", x: 0, y: 0, "text-anchor": "middle", transform: `translate(12,${(y0 + y1) / 2}) rotate(-90)` }, svg); richSVG(s.y.label, yl);
+    const plot = mk("g", { "clip-path": `url(#${this.id}clip)` }, svg);
+    for (const mk_ of s.marks || []) if (mk_.kind === "hline" || mk_.kind === "vline" || mk_.kind === "seg") this.drawMark(plot, mk_);
+    for (const se of s.series) {
+      if (se.kind === "points") {
+        const g = mk("g", null, plot);
+        for (const p of se.pts) {
+          if (se.err && p[2]) { const a = mk("path", { d: se.errX ? `M${sx(p[0] - p[2])},${sy(p[1])}H${sx(p[0] + p[2])}` : `M${sx(p[0])},${sy(p[1] - p[2])}V${sy(p[1] + p[2])}M${sx(p[0]) - 2.5},${sy(p[1] - p[2])}h5M${sx(p[0]) - 2.5},${sy(p[1] + p[2])}h5` }, g); a.style.stroke = "var(--muted)"; a.style.strokeWidth = 1; a.style.fill = "none"; }
+        }
+        for (const p of se.pts) { if (!isFinite(p[0]) || !isFinite(p[1])) continue; const e = marker(g, se.shape || "circle", sx(p[0]), sy(p[1]), se.color, se.hollow, se.r || 3.6); if (se.opacity) e.style.opacity = se.opacity; }
+      } else {
+        let d = "", pen = false;
+        for (const p of se.pts) { if (!isFinite(p[0]) || !isFinite(p[1]) || (s.y.log && p[1] <= 0)) { pen = false; continue; } const X = sx(p[0]), Y = Math.max(-1e4, Math.min(1e4, sy(p[1]))); d += (pen ? "L" : "M") + X.toFixed(2) + "," + Y.toFixed(2); pen = true; }
+        const path = mk("path", { d }, plot); path.style.fill = "none"; path.style.stroke = se.color; path.style.strokeWidth = se.width || 2;
+        path.setAttribute("stroke-linejoin", "round"); path.setAttribute("stroke-linecap", "round"); if (se.dash) path.setAttribute("stroke-dasharray", lineDash(se.dash));
+      }
+    }
+    for (const mk_ of s.marks || []) if (mk_.kind === "point") this.drawMark(svg, mk_);
+    this.hl = mk("g", null, svg);
+  }
+  drawMark(g, mk_) {
+    const { sx, sy } = this, b = this.box_;
+    if (mk_.kind === "hline" || mk_.kind === "vline") {
+      const l = mk_.kind === "hline" ? mk("line", { x1: b.x0, x2: b.x1, y1: sy(mk_.at), y2: sy(mk_.at) }, g) : mk("line", { x1: sx(mk_.at), x2: sx(mk_.at), y1: b.y1, y2: b.y0 }, g);
+      l.style.stroke = mk_.color || "var(--muted)"; l.style.strokeWidth = mk_.width || 1; if (mk_.dash) l.setAttribute("stroke-dasharray", lineDash(mk_.dash));
+      if (mk_.label) { const t = mk("text", { class: "ann", x: mk_.kind === "hline" ? b.x1 - 4 : sx(mk_.at) + 4, y: mk_.kind === "hline" ? sy(mk_.at) - 4 : b.y1 + 12, "text-anchor": mk_.kind === "hline" ? "end" : "start" }, g); richSVG(mk_.label, t); }
+    } else if (mk_.kind === "seg") {
+      const l = mk("line", { x1: sx(mk_.a[0]), y1: sy(mk_.a[1]), x2: sx(mk_.b[0]), y2: sy(mk_.b[1]) }, g);
+      l.style.stroke = mk_.color || "var(--muted)"; l.style.strokeWidth = mk_.width || 1.2; if (mk_.dash) l.setAttribute("stroke-dasharray", lineDash(mk_.dash));
+    } else if (mk_.kind === "point") {
+      const X = sx(mk_.x), Y = sy(mk_.y);
+      if (X < b.x0 - 1 || X > b.x1 + 1 || Y < b.y1 - 1 || Y > b.y0 + 1) return;
+      marker(g, mk_.shape || "diamond", X, Y, mk_.color, false, mk_.r || 4.6);
+      if (mk_.label) { const right = X > (b.x0 + b.x1) / 2; const t = mk("text", { class: "ann", x: X + (right ? -8 : 8), y: Y + (mk_.dy ?? -8), "text-anchor": right ? "end" : "start" }, g); richSVG(mk_.label, t); }
+    }
+  }
+  clear() { this.last = null; this.tip.hidden = true; if (this.hl) this.hl.textContent = ""; }
+  hover(px, py, kb) {
+    const s = this.spec, b = this.box_; if (!s || !b) return;
+    if (px < b.x0 - 6 || px > b.x1 + 6) { this.clear(); return; }
+    px = Math.min(b.x1, Math.max(b.x0, px)); this.last = [px, py, kb];
+    const xq = this.ix(px); if (kb) this.kx = xq;
+    const hl = this.hl; hl.textContent = "";
+    if (s.crosshair !== false) { const vl = mk("line", { x1: px, x2: px, y1: b.y1, y2: b.y0 }, hl); vl.style.stroke = "var(--ink-2)"; vl.style.strokeWidth = 1; vl.setAttribute("stroke-dasharray", "2 3"); }
+    const rows = [];
+    for (const se of s.series) {
+      if (se.tip === false) continue;
+      if (se.kind === "points") {
+        if (py == null && !kb) continue;
+        let best = null, bd = 1e9;
+        for (const p of se.pts) { if (!isFinite(p[0]) || !isFinite(p[1])) continue; const d = py == null ? Math.abs(this.sx(p[0]) - px) : Math.hypot(this.sx(p[0]) - px, this.sy(p[1]) - py); if (d < bd) { bd = d; best = p; } }
+        if (best && bd < 16) { rows.push({ se, text: se.fmtPt ? se.fmtPt(best) : best[1].toFixed(3), pt: best }); }
+        continue;
+      }
+      const pts = se.sorted || (se.sorted = se.pts.filter((p) => isFinite(p[0]) && isFinite(p[1])).slice().sort((a, b) => a[0] - b[0]));
+      if (!pts.length || xq < pts[0][0] - 1e-9 || xq > pts[pts.length - 1][0] + 1e-9) continue;
+      const v = interp(xq, pts.map((p) => p[0]), pts.map((p) => p[1]));
+      if (!isFinite(v) || (s.y.log && v <= 0)) continue;
+      rows.push({ se, text: (se.fmt || ((z) => z.toFixed(3)))(v), pt: [xq, v] });
+    }
+    for (const r of rows) { const Y = this.sy(r.pt[1]); if (Y < b.y1 - 2 || Y > b.y0 + 2) continue; marker(hl, r.se.kind === "points" ? (r.se.shape || "circle") : "circle", this.sx(r.pt[0]), Y, r.se.color, false, r.se.kind === "points" ? 5 : 3.6); }
+    const tip = this.tip; tip.textContent = "";
+    const titled = rows.find((r) => r.se.title);
+    const t = document.createElement("div"); t.className = "t"; richHTML(titled ? titled.se.title(titled.pt) : (s.tipTitle || ((x) => "x = " + x.toFixed(3)))(xq), t); tip.appendChild(t);
+    for (const r of rows) {
+      const d = document.createElement("div"); d.className = "r";
+      d.appendChild(keySVG({ kind: r.se.kind === "points" ? (r.se.shape || "circle") : "line", color: r.se.color, dash: r.se.dash, hollow: r.se.hollow }));
+      const bb = document.createElement("b"); bb.textContent = r.text; d.appendChild(bb);
+      const i = document.createElement("i"); richHTML(r.se.tipName || r.se.name || "", i); d.appendChild(i); tip.appendChild(d);
+    }
+    if (!rows.length) { this.tip.hidden = true; return; }
+    tip.hidden = false;
+    const tw = tip.offsetWidth, left = px + 14 + tw > b.W ? px - 14 - tw : px + 14;
+    tip.style.left = Math.max(0, left) + "px"; tip.style.top = (b.y1 + 4) + "px";
+  }
+}
+
+// ---- physics: begin (pure functions, checked against quantum_dot_photodetector by scripts/verify_web_page.py)
+const HB2_2M0 = 0.0380998, E2_4PIE0 = 1.439964, KB = 8.617333e-5, HC = 1239.842, HB2_2M0_A = HB2_2M0 * 100;
+const EG_PBS = 0.41, M_STAR = 0.085, EPS_INF = 17.2, COULOMB_COEFF = 1.786, A_PBS = 0.5936;
+const MOREELS_A = 0.0252, MOREELS_B = 0.283, H_NN = A_PBS / 2;
+const BETA_QD = [1.08, 1.10], BETA_SAM = 0.79, PHI_SAM = 1.39, PHI_VAC = 4.5;
+const QD_DIODE = { gap: 0.80, dark: 1.4e-7 }, INGAAS_FPA = { gap: 0.75, dark: 2.25e-9, T: 298.15 };
+const PREFACTOR_POWER = { 1: 3.0, 2: 1.5 };
+function gapMoreels(d) { return EG_PBS + 1.0 / (MOREELS_A * d ** 2 + MOREELS_B * d); }
+function diameterForGap(E) {                    // a d² + b d = x with x = 1/(E − Eg), the positive root, written without cancellation
+  const x = 1 / (E - EG_PBS);
+  return 2 * x / (MOREELS_B + Math.sqrt(MOREELS_B ** 2 + 4 * MOREELS_A * x));
+}
+function diameterForWavelength(lam) { return diameterForGap(HC / lam); }
+function confinementEma(d) { const R = d / 2; return HB2_2M0 * Math.PI ** 2 / R ** 2 * (1 / M_STAR + 1 / M_STAR); }
+function coulomb(d) { const R = d / 2; return COULOMB_COEFF * E2_4PIE0 / (EPS_INF * R); }
+function gapEma(d) { return EG_PBS + confinementEma(d) - coulomb(d); }
+function gapHbmNoCoulomb(d) { const R = d / 2, k2 = (Math.PI / R) ** 2; return Math.sqrt(EG_PBS ** 2 + 4 * EG_PBS * HB2_2M0 * k2 / M_STAR); }
+function gapHbm(d) { return gapHbmNoCoulomb(d) - coulomb(d); }
+function overestimate(gap, d) { return (gap - EG_PBS) / (gapMoreels(d) - EG_PBS); }
+function countSites(d, shift) {                 // [atoms inside the sphere, surface atoms]; shift 0 = atom-centred, 0.5 = cube-centred
+  const R = d / 2, n = Math.ceil(R / H_NN) + 2, w = 2 * n + 1, R2 = R ** 2 + 1e-12, H2 = H_NN ** 2;
+  const occ = new Uint8Array(w * w * w), at = (i, j, k) => (i * w + j) * w + k;
+  for (let i = 0; i < w; i++) { const x = i - n + shift; for (let j = 0; j < w; j++) { const y = j - n + shift; for (let k = 0; k < w; k++) { const z = k - n + shift; if ((x ** 2 + y ** 2 + z ** 2) * H2 <= R2) occ[at(i, j, k)] = 1; } } }
+  let inside = 0, surface = 0;
+  for (let i = 1; i < w - 1; i++) for (let j = 1; j < w - 1; j++) for (let k = 1; k < w - 1; k++) {
+    if (!occ[at(i, j, k)]) continue; inside++;
+    if (!(occ[at(i + 1, j, k)] && occ[at(i - 1, j, k)] && occ[at(i, j + 1, k)] && occ[at(i, j - 1, k)] && occ[at(i, j, k + 1)] && occ[at(i, j, k - 1)])) surface++;
+  }
+  return [inside, surface];
+}
+function surfaceFraction(d) { const a = countSites(d, 0), b = countSites(d, 0.5); return (a[1] / a[0] + b[1] / b[0]) / 2; }
+function shellFraction(d) { return 1 - (1 - 2 * H_NN / d) ** 3; }
+function idealRatio(egSmall, egBig, T, n) { return Math.exp((egBig - egSmall) / (n * KB * T)); }
+function halvingInterval(eg, T, n) { return Math.log(2) / (PREFACTOR_POWER[n] / T + eg / (n * KB * T ** 2)); }
+function relativeRate(beta, dx) { return Math.exp(-beta * dx); }
+function barrierFromBeta(beta, m) { return HB2_2M0_A * (beta / 2) ** 2 / m; }
+function betaFromBarrier(phi, m) { return 2 * Math.sqrt(phi * m / HB2_2M0_A); }
+function massFromBetaAndBarrier(beta, phi) { return HB2_2M0_A * (beta / 2) ** 2 / phi; }
+const BETA_FILM = (BETA_QD[0] + BETA_QD[1]) / 2, M_SAM = massFromBetaAndBarrier(BETA_SAM, PHI_SAM), BETA_VAC = betaFromBarrier(PHI_VAC, 1.0);
+function measuredDarkRatio() { return QD_DIODE.dark / INGAAS_FPA.dark; }
+function gapOnlyDarkRatio() { return idealRatio(INGAAS_FPA.gap, QD_DIODE.gap, INGAAS_FPA.T, 1) ** -1; }
+// ---- physics: end
+
+// =================================================================== state
+const $ = (id) => document.getElementById(id);
+const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
+const PRESETS = {
+  st940: { label: "ST sensor, 940 nm", note: "near infrared [12]", lam: 940 },
+  st1400: { label: "ST sensor, 1400 nm", note: "short-wave infrared [12]", lam: 1400 },
+  tel: { label: "Telecom band, 1550 nm", note: "where InGaAs cameras work", lam: 1550 },
+  far: { label: "Beyond InGaAs, 1750 nm", note: "past the 0.75 eV InGaAs edge", lam: 1750 },
+};
+const LAM = [{ k: "lam", lab: "Wavelength λ", u: "nm", min: 800, max: 1800, step: 1 }];
+const DARK = [{ k: "ref", lab: "Compared with dots for", u: "nm", min: 800, max: 1800, step: 1 }, { k: "T", lab: "Temperature", u: "K", min: 230, max: 330, step: 1 }];
+const TUN = [{ k: "dx", lab: "Ligand shorter by", u: "Å", min: 0, max: 6, step: 0.1 }];
+const DEFAULT = { lam: 1400, ref: 940, T: 300, dx: 2, tab: "size" };
+const S = Object.assign({}, DEFAULT);
+for (const [k, v] of new URLSearchParams(location.hash.slice(1))) if (k in DEFAULT) S[k] = typeof DEFAULT[k] === "number" ? (isFinite(+v) ? +v : DEFAULT[k]) : v;
+const theme = new URLSearchParams(location.search).get("theme"); if (theme === "dark" || theme === "light") document.documentElement.dataset.theme = theme;
+function saveHash() { const p = new URLSearchParams(); for (const k in DEFAULT) if (S[k] !== DEFAULT[k]) p.set(k, S[k]); history.replaceState(null, "", p.toString() ? "#" + p.toString() : location.pathname + location.search); }
+
+// =================================================================== formatting
+const SUP = { "-": "⁻", "0": "⁰", "1": "¹", "2": "²", "3": "³", "4": "⁴", "5": "⁵", "6": "⁶", "7": "⁷", "8": "⁸", "9": "⁹" };
+function sci(v, digits = 2) {
+  if (!isFinite(v)) return "—"; if (v === 0) return "0";
+  let e = Math.floor(Math.log10(Math.abs(v)));
+  if (e >= -2 && e <= 3) return (+v.toPrecision(digits)).toLocaleString("en-US");
+  let m = +(v / 10 ** e).toFixed(digits - 1); if (Math.abs(m) >= 10) { m /= 10; e += 1; }
+  return m.toFixed(digits - 1) + " × 10" + String(e).split("").map((c) => SUP[c]).join("");
+}
+const f2 = (v) => v.toFixed(2), f3 = (v) => v.toFixed(3), pct = (v) => (100 * v).toFixed(1) + " %";
+function decade(v) { const e = Math.round(Math.log10(v)); return e === 0 ? "1" : "10" + String(e).split("").map((c) => SUP[c]).join(""); }
+function decades(lo, hi, maxN = 8) { const e0 = Math.round(Math.log10(lo)), e1 = Math.round(Math.log10(hi)), step = Math.max(1, Math.ceil((e1 - e0) / maxN)), out = []; for (let e = e0; e <= e1; e += step) out.push(10 ** e); return out; }
+
+// =================================================================== controls
+for (const [k, pr] of Object.entries(PRESETS)) {
+  const b = el("button", "preset"); b.type = "button"; b.dataset.preset = k; b.append(document.createTextNode(pr.label), el("small", null, pr.note));
+  b.addEventListener("click", () => { S.lam = pr.lam; update(); }); $("presets").append(b);
+}
+const sliders = [];
+function control(host, p) {
+  const c = el("div", "ctl"), row = el("div", "row"), lab = el("label"); lab.htmlFor = "n_" + p.k; lab.textContent = p.lab; lab.append(el("span", "u", p.u));
+  const num = el("input"); num.type = "number"; num.id = "n_" + p.k; num.step = p.step; num.min = p.min; num.max = p.max;
+  const rng = el("input"); rng.type = "range"; rng.min = p.min; rng.max = p.max; rng.step = p.step; rng.setAttribute("aria-label", p.lab);
+  rng.addEventListener("input", () => { S[p.k] = +rng.value; update(rng); });
+  num.addEventListener("change", () => { let v = +num.value; if (!isFinite(v)) v = S[p.k]; S[p.k] = Math.min(p.max, Math.max(p.min, v)); update(); });
+  row.append(lab, num); c.append(row, rng); host.append(c);
+  sliders.push({ sync: (skip) => { num.value = S[p.k]; if (skip !== rng) rng.value = S[p.k]; } });
+}
+LAM.forEach((p) => control($("lamGrp"), p)); DARK.forEach((p) => control($("darkGrp"), p)); TUN.forEach((p) => control($("tunGrp"), p));
+const lamInfo = el("div", "derived"); lamInfo.style.gridTemplateColumns = "auto 1fr"; $("lamGrp").append(lamInfo);
+const TABS = ["size", "dark", "tunnel", "method"];
+for (const t of TABS) $("t-" + t).addEventListener("click", () => { S.tab = t; update(); });
+
+// =================================================================== curves that do not depend on the controls
+const D_MIN = 2.5, D_MAX = 10;
+const DS = Array.from({ length: 151 }, (_, i) => D_MIN + (D_MAX - D_MIN) * i / 150);
+const SURF = DS.map((d) => [d, 100 * surfaceFraction(d)]), SHELL = DS.map((d) => [d, 100 * shellFraction(d)]);
+const GAP = { ema: DS.map((d) => [d, gapEma(d)]), hbm: DS.map((d) => [d, gapHbm(d)]), moreels: DS.map((d) => [d, gapMoreels(d)]) };
+
+// =================================================================== compute and render
+const cGap = new Chart($("cGap"), { height: 300, m: { l: 46, r: 12, t: 10, b: 40 } });
+const cSurf = new Chart($("cSurf"), { height: 300, m: { l: 46, r: 12, t: 10, b: 40 } });
+const cDark = new Chart($("cDark"), { height: 320, m: { l: 52, r: 12, t: 10, b: 40 } });
+const cTun = new Chart($("cTun"), { height: 320, m: { l: 52, r: 12, t: 10, b: 40 } });
+function compute() {
+  const E = HC / S.lam, d = diameterForWavelength(S.lam), Eref = HC / S.ref, dref = diameterForWavelength(S.ref);
+  const ema = gapEma(d), hbm = gapHbm(d), counts = countSites(d, 0);
+  return { E, d, Eref, dref, ema, hbm, moreels: gapMoreels(d), overEma: overestimate(ema, d), overHbm: overestimate(hbm, d),
+    surf: surfaceFraction(d), shell: shellFraction(d), atoms: counts[0],
+    r1: idealRatio(E, Eref, S.T, 1), r2: idealRatio(E, Eref, S.T, 2), h1: halvingInterval(E, S.T, 1), h2: halvingInterval(E, S.T, 2),
+    gain: 1 / relativeRate(BETA_FILM, S.dx), gainLo: 1 / relativeRate(BETA_QD[0], S.dx), gainHi: 1 / relativeRate(BETA_QD[1], S.dx) };
+}
+function update(skip) {
+  for (const t of TABS) { const on = t === S.tab; $("t-" + t).setAttribute("aria-selected", String(on)); $("p-" + t).hidden = !on; }
+  for (const b of $("presets").querySelectorAll(".preset")) b.setAttribute("aria-pressed", String(PRESETS[b.dataset.preset].lam === S.lam));
+  sliders.forEach((s) => s.sync(skip));
+  const R = compute();
+  lamInfo.textContent = ""; lamInfo.append(el("span", null, "first exciton hc/λ"), el("span", "num", f3(R.E) + " eV"), el("span", null, "dot diameter"), el("span", "num", f2(R.d) + " nm"));
+  renderReadouts(R); renderGap(R); renderSurf(R); renderDark(R); renderTunnel(R); saveHash();
+}
+function renderReadouts(R) {
+  const box = $("readouts"); box.textContent = "";
+  const ro = (k, v, unit, x, s) => { const d = el("div", "ro"); d.append(el("div", "k", k)); const vv = el("div", "v", v); if (unit) vv.append(el("small", null, " " + unit)); if (x) vv.append(el("span", "x", x)); d.append(vv); if (s) d.append(el("div", "s", s)); box.append(d); };
+  ro("Dot diameter", f2(R.d), "nm", null, `first exciton at ${f3(R.E)} eV (measured sizing curve)`);
+  ro("Atoms at the surface", pct(R.surf), null, null, `${R.atoms.toLocaleString("en-US")} atoms in the dot; shell model ${pct(R.shell)}`);
+  ro("Effective-mass gap", f2(R.ema), "eV", "×" + R.overEma.toFixed(1), `confinement vs measured; hyperbolic bands ${f2(R.hbm)} eV (×${R.overHbm.toFixed(1)})`);
+  ro(`Dark current vs ${S.ref} nm dots`, sci(R.r1), "times", null, `ideal diffusion limit at ${S.T} K; generation limit ${sci(R.r2)} times`);
+  ro(`Current, ligand ${S.dx} Å shorter`, "×" + sci(R.gain), null, null, `β = ${f2(BETA_FILM)} Å⁻¹ [19]: ×${sci(R.gainLo)} to ×${sci(R.gainHi)}`);
+  $("answer").innerHTML = `<p>A detector for ${S.lam} nm needs PbS dots <b>${f2(R.d)} nm</b> across, and ${pct(R.surf)} of their atoms sit at the surface. ` +
+    `The parabolic-band effective-mass model would put their gap at ${f2(R.ema)} eV instead of the measured ${f2(R.moreels)} eV, ${R.overEma.toFixed(1)} times the measured confinement energy; ` +
+    `hyperbolic bands bring it down to ${f2(R.hbm)} eV (${R.overHbm.toFixed(1)} times), so dot sizes are taken from measured curves.</p>`;
+}
+function renderGap(R) {
+  cGap.set({ aria: "Band gap against dot diameter", x: { min: D_MIN, max: D_MAX, label: "dot diameter d (nm)" }, y: { min: 0, max: 2.5, label: "band gap (eV)" },
+    series: [
+      { pts: GAP.moreels, color: "var(--s1)", name: "measured sizing curve [7]", fmt: (v) => f3(v) + " eV" },
+      { pts: GAP.hbm, color: "var(--s3)", name: "hyperbolic bands [18]", fmt: (v) => f3(v) + " eV" },
+      { pts: GAP.ema, color: "var(--s2)", name: "effective-mass approximation [5]", fmt: (v) => f3(v) + " eV" },
+    ],
+    marks: [{ kind: "hline", at: EG_PBS, color: "var(--muted)", dash: "dot", label: "bulk PbS 0.41 eV" },
+      { kind: "hline", at: R.E, color: "var(--ink-2)", dash: "dash", label: `hc/λ = ${f3(R.E)} eV` },
+      { kind: "vline", at: R.d, color: "var(--ink-2)", dash: "dash" },
+      { kind: "point", x: R.d, y: R.moreels, color: "var(--s1)", label: `${f2(R.d)} nm` },
+      { kind: "point", x: R.d, y: R.ema, color: "var(--s2)", shape: "circle", r: 3.8 },
+      { kind: "point", x: R.d, y: R.hbm, color: "var(--s3)", shape: "circle", r: 3.8 }],
+    tipTitle: (x) => "d = " + f2(x) + " nm" });
+}
+function renderSurf(R) {
+  cSurf.set({ aria: "Surface atoms against dot diameter", x: { min: D_MIN, max: D_MAX, label: "dot diameter d (nm)" }, y: { min: 0, max: 60, label: "atoms at the surface (%)" },
+    series: [{ pts: SURF, color: "var(--s1)", name: "counted on the lattice", fmt: (v) => v.toFixed(1) + " %" },
+      { pts: SHELL, color: "var(--s2)", name: "shell one Pb–S distance thick", dash: "dash", fmt: (v) => v.toFixed(1) + " %" }],
+    marks: [{ kind: "vline", at: R.d, color: "var(--ink-2)", dash: "dash" }, { kind: "point", x: R.d, y: 100 * R.surf, color: "var(--s1)", label: pct(R.surf) }],
+    tipTitle: (x) => "d = " + f2(x) + " nm" });
+}
+function renderDark(R) {
+  const lams = Array.from({ length: 201 }, (_, i) => 800 + 5 * i), Er = HC / S.ref;
+  const n1 = lams.map((l) => [l, idealRatio(HC / l, Er, S.T, 1)]), n2 = lams.map((l) => [l, idealRatio(HC / l, Er, S.T, 2)]);
+  const vals = n1.concat(n2).map((p) => p[1]), lo = 10 ** Math.floor(Math.log10(Math.min(...vals))), hi = 10 ** Math.ceil(Math.log10(Math.max(...vals)));
+  $("darkSub").textContent = `Ideal dark current of dots sized for λ, relative to dots for ${S.ref} nm, both at ${S.T} K; only the gap differs.`;
+  cDark.set({ aria: "Ideal dark-current ratio against wavelength", x: { min: 800, max: 1800, label: "wavelength the dots absorb (nm)" },
+    y: { min: lo, max: hi, log: true, label: `ratio to dots for ${S.ref} nm`, fmt: decade, ticks: decades(lo, hi) },
+    series: [{ pts: n1, color: "var(--s2)", name: "diffusion limit, n = 1", fmt: (v) => sci(v) + "×" }, { pts: n2, color: "var(--s1)", name: "generation limit, n = 2", fmt: (v) => sci(v) + "×" }],
+    marks: [{ kind: "vline", at: S.ref, color: "var(--muted)", dash: "dot", label: "reference" }, { kind: "vline", at: S.lam, color: "var(--ink-2)", dash: "dash", label: `${S.lam} nm` },
+      { kind: "point", x: S.lam, y: R.r1, color: "var(--s2)", shape: "circle", r: 4 }, { kind: "point", x: S.lam, y: R.r2, color: "var(--s1)", shape: "circle", r: 4 }],
+    tipTitle: (x) => "λ = " + x.toFixed(0) + " nm" });
+  $("darkNote").innerHTML = `Near ${S.T} K, cooling by <b>${R.h1.toFixed(1)} K</b> halves the ideal diffusion current of the ${S.lam} nm dots (generation current: ${R.h2.toFixed(1)} K). ` +
+    `These are ideal limits. Measured devices differ more: a PbS quantum-dot photodiode [23] has <b>${measuredDarkRatio().toFixed(0)} times</b> the dark current of an InGaAs focal-plane array [24] at room temperature, ` +
+    `although by its slightly wider gap (0.80 vs 0.75 eV) an ideal diode would have ${gapOnlyDarkRatio().toFixed(2)} times; the excess comes from defects such as surface traps, not from the gap.`;
+}
+function renderTunnel(R) {
+  const xs = Array.from({ length: 121 }, (_, i) => 0.05 * i), line = (b) => xs.map((x) => [x, relativeRate(b, x)]);
+  cTun.set({ aria: "Relative tunnelling rate against extra gap", x: { min: 0, max: 6, label: "extra gap Δd (Å)" }, y: { min: 1e-6, max: 1.5, log: true, label: "relative rate", fmt: decade, ticks: decades(1e-6, 1) },
+    series: [{ pts: line(BETA_FILM), color: "var(--s1)", name: `PbSe dot film [19]: β = ${f2(BETA_FILM)} Å⁻¹`, fmt: (v) => sci(v, 3) },
+      { pts: line(BETA_SAM), color: "var(--s2)", name: `alkanethiol monolayer [21]: β = ${f2(BETA_SAM)} Å⁻¹`, fmt: (v) => sci(v, 3) },
+      { pts: line(BETA_VAC), color: "var(--s3)", name: `vacuum gap, φ = ${PHI_VAC} eV: β = ${f2(BETA_VAC)} Å⁻¹`, fmt: (v) => sci(v, 3) }],
+    marks: [{ kind: "vline", at: S.dx, color: "var(--ink-2)", dash: "dash" }, { kind: "point", x: S.dx, y: 1 / R.gain, color: "var(--s1)", label: `×${sci(R.gain)} when ${S.dx} Å shorter` }],
+    tipTitle: (x) => "Δd = " + f2(x) + " Å" });
+  $("tunNote").innerHTML = `Shortening the ligand by ${S.dx} Å raises the current between dots about <b>${sci(R.gain)} times</b>. ` +
+    `For a rectangular barrier, β = ${f2(BETA_FILM)} Å⁻¹ means φ = ${f2(barrierFromBeta(BETA_FILM, 1))} eV with the free-electron mass, or ${f2(barrierFromBeta(BETA_FILM, M_SAM))} eV with m* = ${f2(M_SAM)} m<sub>0</sub>, ` +
+    `the mass that makes the monolayer data self-consistent; because the barrier depends on the assumed mass, β is compared directly.`;
+}
+$("checkText").textContent = "scripts/verify_web_page.py runs the physics block of this page in Node.js for 300 random cases and compares dot diameters, the three gap models, confinement ratios, atom and surface-atom counts (which must be identical), surface and shell fractions, dark-current ratios, halving steps, tunnelling rates and barriers with the quantum_dot_photodetector package; every number must agree to a relative 1e-9. It runs in the pytest suite (tests/test_web_page.py). The package itself has 102 automated checks against independent values (VALIDATION.md).";
+update();
+</script>

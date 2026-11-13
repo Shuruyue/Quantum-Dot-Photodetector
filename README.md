@@ -4,6 +4,10 @@
 ![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue)
 ![License: MIT](https://img.shields.io/badge/license-MIT-green)
 
+**[Interactive page](https://shuruyue.github.io/Quantum-Dot-Photodetector/web/quantum-dot-explorer.html)**: choose the wavelength a detector should absorb and see the PbS dot it needs. For ST's 1400 nm sensor the dots are 5.1 nm across and 27 % of their atoms sit at the surface; the textbook effective-mass model puts their gap at 1.71 eV, almost twice the measured 0.89 eV, and the smaller gap raises the ideal dark current 1.9 × 10⁷ times over dots for 940 nm.
+
+[![The interactive page: band gap and surface atoms against dot diameter](web/quantum-dot-explorer.png)](https://shuruyue.github.io/Quantum-Dot-Photodetector/web/quantum-dot-explorer.html)
+
 ## PbS Colloidal Quantum-Dot Photodetector Models
 
 The calculations behind the quantum-dot part of the report *Nanoscale Detectors: Quantum Dots & MOFs* (Nanotechnology, Group 10). A PbS colloidal quantum-dot (CQD) film coated on a silicon readout chip absorbs visible and short-wave infrared (SWIR) light; the dot size sets the absorption edge. The models here answer four questions: how dot size sets the band gap, how many atoms sit at the dot surface, how fast carriers tunnel between dots, and why CQD photodiodes have more dark current than InGaAs.
@@ -55,7 +59,7 @@ pytest -q                               # unit tests + full validation suite
 python scripts/validate.py --markdown   # 102 checks → outputs/validation_table.json and VALIDATION.md
 ```
 
-`scripts/validate.py` exits with code 1 if any check fails. The full table is in [VALIDATION.md](VALIDATION.md).
+`scripts/validate.py` exits with code 1 if any check fails. The full table is in [VALIDATION.md](VALIDATION.md). `python scripts/verify_web_page.py` runs the physics of the interactive page in Node.js and compares every number with the package (relative 1e-9; lattice counts identical); the test suite runs it when Node.js is installed.
 
 ## Project Structure
 
@@ -76,6 +80,7 @@ Quantum-Dot-Photodetector/
 ├── scripts/              # command-line entry points
 ├── tests/                # pytest: unit tests and full validation
 ├── docs/figures/         # generated figures
+├── web/                  # interactive page (GitHub Pages), checked by scripts/verify_web_page.py
 ├── VALIDATION.md         # check-by-check validation table
 └── outputs/              # generated JSON (git-ignored)
 ```
