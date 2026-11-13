@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pbs-qd-photodetector"
+version = "0.1.0"
+description = "Size, surface, transport and dark-current models of PbS colloidal quantum-dot photodetectors, with every number in the report checked"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "Shuruyue" }]
+dependencies = ["numpy>=1.24", "scipy>=1.10", "matplotlib>=3.7"]
+
+[project.optional-dependencies]
+dev = ["pytest>=7"]
+
+[tool.setuptools]
+packages = ["qd_photodetector"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
